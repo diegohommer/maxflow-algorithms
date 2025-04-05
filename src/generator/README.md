@@ -1,9 +1,8 @@
 # Max Flow
 Support code for the max flow problems assigment.
-Código de suporte para o trabalho prático em problemas de fluxo máximo.
 
 
-## Gerador Washington
+## Washington Generator
 
 >To use:
 >
