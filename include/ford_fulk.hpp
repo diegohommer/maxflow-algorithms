@@ -14,5 +14,6 @@ struct FordResult {
 FordResult ford_fulkerson(Graph& graph, int source, int sink, SearchFunction find_path);
 FordResult edmonds_karp(Graph& graph, int source, int sink);
 FordResult randomized_ford_fulkerson(Graph& graph, int source, int sink);
+FordResult fattest_path(Graph& graph, int source, int sink);
 
 #endif // FORD_FULK_H

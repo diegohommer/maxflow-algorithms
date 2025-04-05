@@ -3,7 +3,7 @@
 
 KHeap::KHeap(int total_vertices, int new_k) : pos(total_vertices, -1), k(new_k) {}
 
-int KHeap::get_vertex_dist(int vertex){
+int KHeap::get_vertex_cap(int vertex){
     if (pos[vertex] == -1) { 
         return std::numeric_limits<int>::max(); 
     }
@@ -21,14 +21,14 @@ HeapNode KHeap::deletemax(){
     return max;
 }
 
-void KHeap::update(int vertex, int capacity){
+void KHeap::update(int vertex, int capacity, Edge* pred){
     int vertex_index = pos[vertex];
-    heap[vertex_index] = HeapNode{vertex, capacity};
+    heap[vertex_index] = HeapNode{vertex, capacity, pred};
     int sift_up_count = heapify_up(vertex_index);
 }
 
-void KHeap::insert(int vertex, int capacity){
-    heap.push_back(HeapNode{vertex, capacity});
+void KHeap::insert(int vertex, int capacity, Edge* pred){
+    heap.push_back(HeapNode{vertex, capacity, pred});
     pos[vertex] = heap.size() - 1;
 }
 

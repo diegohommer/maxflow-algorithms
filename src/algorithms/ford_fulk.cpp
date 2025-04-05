@@ -37,3 +37,7 @@ FordResult edmonds_karp(Graph& graph, int source, int sink){
 FordResult randomized_ford_fulkerson(Graph& graph, int source, int sink){
     return ford_fulkerson(graph, source, sink, randomized_dfs_path);
 };
+
+FordResult fattest_path(Graph& graph, int source, int sink){
+    return ford_fulkerson(graph, source, sink, modified_dijkstra_path);
+};

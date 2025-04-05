@@ -8,7 +8,7 @@ BDIR := bin
 CXX := g++
 CC := gcc
 CXXFLAGS := -std=c++17 -O2 -fopenmp -I$(IDIR)
-CFLAGS := -O2 -I$(IDIR)
+CFLAGS := -O2 -I$(IDIR) -w
 LDFLAGS := -fopenmp  # Added for OpenMP linking
 
 # ========== Source Files ==========
