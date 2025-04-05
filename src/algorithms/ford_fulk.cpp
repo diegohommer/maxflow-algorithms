@@ -1,12 +1,12 @@
 #include "ford_fulk.hpp"
 
-FordResult edmonds_karp(Graph& graph, int source, int sink){
+FordResult ford_fulkerson(Graph& graph, int source, int sink, SearchFunction find_path){
     int max_flow = 0;
     bool exists_path = false;
 
     do{
         // Look for augmentation path using BFS
-        FlowPath bfs_result = bfs_path(graph, source, sink);
+        FlowPath bfs_result = find_path(graph, source, sink);
         exists_path = !bfs_result.path.empty();
 
         if(exists_path){
@@ -20,7 +20,7 @@ FordResult edmonds_karp(Graph& graph, int source, int sink){
 
                 path_edge->flow += flow;
                 path_edge->capacity -= flow;
-                path_edge->reverse->capacity += flow;
+                graph.get_reverse(*path_edge)->capacity += flow;
             }
         }
 
@@ -28,4 +28,12 @@ FordResult edmonds_karp(Graph& graph, int source, int sink){
 
 
     return FordResult { max_flow };
+};
+
+FordResult edmonds_karp(Graph& graph, int source, int sink){
+    return ford_fulkerson(graph, source, sink, bfs_path);
+};
+
+FordResult randomized_ford_fulkerson(Graph& graph, int source, int sink){
+    return ford_fulkerson(graph, source, sink, randomized_dfs_path);
 };
