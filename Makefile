@@ -1,44 +1,55 @@
-## Directories
-IDIR = include
-SDIR = src
-ODIR = obj
-BDIR = bin
+# ========== Directory Structure ==========
+IDIR := include
+SDIR := src
+ODIR := obj
+BDIR := bin
 
-## Compiler and flags
-CXX = g++
-CC = gcc
-CXXFLAGS = -std=c++17 -O2 -fopenmp -I$(IDIR)
-CFLAGS = -O2 -I$(IDIR)
+# ========== Compiler and Flags ==========
+CXX := g++
+CC := gcc
+CXXFLAGS := -std=c++17 -O2 -fopenmp -I$(IDIR)
+CFLAGS := -O2 -I$(IDIR)
+LDFLAGS := -fopenmp  # Added for OpenMP linking
 
-## Source files
-MAIN_SRC = $(SDIR)/main.cpp $(SDIR)/algorithms/graph.cpp $(SDIR)/algorithms/ford_fulk.cpp $(SDIR)/algorithms/path_finding.cpp
-GEN_SRC = $(SDIR)/generator/new_washington.c
+# ========== Source Files ==========
+ALG_SRCS := $(wildcard $(SDIR)/algorithms/*.cpp)
+DS_SRCS := $(wildcard $(SDIR)/data_structs/*.cpp)
 
-## Object files
-MAIN_OBJ = $(patsubst $(SDIR)/%.cpp, $(ODIR)/%.o, $(MAIN_SRC))
-GEN_OBJ = $(patsubst $(SDIR)/%.c, $(ODIR)/%.o, $(GEN_SRC))
+MAIN_SRCS := $(SDIR)/main.cpp $(ALG_SRCS) $(DS_SRCS)
+BOOST_SRCS := $(SDIR)/boost_maxflow.cpp
+GEN_SRCS := $(SDIR)/generator/new_washington.c
 
-## Executables
-MAIN_EXEC = $(BDIR)/run_ford
-GEN_EXEC = $(BDIR)/gengraph
+# ========== Object Files ==========
+MAIN_OBJS := $(patsubst $(SDIR)/%.cpp,$(ODIR)/%.o,$(MAIN_SRCS))
+BOOST_OBJS := $(patsubst $(SDIR)/%.cpp,$(ODIR)/%.o,$(BOOST_SRCS))
+GEN_OBJS := $(patsubst $(SDIR)/%.c,$(ODIR)/%.o,$(GEN_SRCS))
 
-## Rules
-all: $(MAIN_EXEC) $(GEN_EXEC)
+# ========== Executables ==========
+EXEC_MAIN := $(BDIR)/flow_solver
+EXEC_BOOST := $(BDIR)/flow_boost
+EXEC_GEN := $(BDIR)/graph_generator
 
-$(MAIN_EXEC): $(MAIN_OBJ)
-	@mkdir -p $(BDIR)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+# ========== Build Rules ==========
+all: $(EXEC_MAIN) $(EXEC_BOOST) $(EXEC_GEN)
 
-$(GEN_EXEC): $(GEN_OBJ)
-	@mkdir -p $(BDIR)
+$(EXEC_MAIN): $(MAIN_OBJS)
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@
+
+$(EXEC_BOOST): $(BOOST_OBJS)
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@
+
+$(EXEC_GEN): $(GEN_OBJS)
+	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $^ -o $@
 
 $(ODIR)/%.o: $(SDIR)/%.cpp
-	@mkdir -p $(dir $@)  
+	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(ODIR)/%.o: $(SDIR)/%.c
-	@mkdir -p $(dir $@)
+	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:

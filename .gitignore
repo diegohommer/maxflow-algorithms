@@ -1,38 +1,36 @@
-# Prerequisites
-*.d
+# Compiled binaries
+/bin/
+/obj/
+*.exe
+*.out
+*.a
+*.so
+*.dll
+*.dylib
 
-# Compiled Object files
-*.slo
-*.lo
+# Object files
 *.o
 *.obj
 
-# Precompiled Headers
-*.gch
-*.pch
+# Build directories
+/build/
+/out/
+*.user
+*.suo
+*.sln
+*.vcxproj*
+*.cmake
+CMakeCache.txt
+CMakeFiles/
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+# Debug files
+*.pdb
+*.idb
+*.ilk
+*.db
 
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-
+# IDE specific
 .vscode/
-gengraph
-max_flow
-run_ford
-*.txt
+.idea/
+*.swp
+*.swo
