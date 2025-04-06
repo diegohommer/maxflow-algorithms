@@ -4,7 +4,8 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 # Define paths relative to script location
-TEST_GRAPHS=("${SCRIPT_DIR}/../test.txt")
+GRAPH_DIR="${SCRIPT_DIR}/../data/graphs"
+TEST_GRAPHS=($(find "$GRAPH_DIR" -type f))
 ALGORITHMS=("${SCRIPT_DIR}/../bin/flow_solver" "${SCRIPT_DIR}/../bin/flow_boost")
 
 # Color setup
