@@ -6,7 +6,8 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 # Define paths relative to script location
 GRAPH_DIR="${SCRIPT_DIR}/../data/graphs"
 TEST_GRAPHS=($(find "$GRAPH_DIR" -type f))
-ALGORITHMS=("${SCRIPT_DIR}/../bin/flow_solver" "${SCRIPT_DIR}/../bin/flow_boost")
+FLOW_SOLVER="${SCRIPT_DIR}/../bin/flow_solver"
+FLOW_BOOST="${SCRIPT_DIR}/../bin/flow_boost"
 
 # Color setup
 GREEN='\033[0;32m'
@@ -22,9 +23,19 @@ for graph in "${TEST_GRAPHS[@]}"; do
     
     # Capture all outputs
     results=()
-    for algo in "${ALGORITHMS[@]}"; do
-        results+=($($algo < "$graph" 2>/dev/null))  # Silences stderr
-    done
+    labels=()
+
+    results+=($($FLOW_SOLVER 0 < "$graph" 2>/dev/null))
+    labels+=("solver:edmonds-karp")
+
+    results+=($($FLOW_SOLVER 1 < "$graph" 2>/dev/null))
+    labels+=("solver:randomized-dfs")
+
+    results+=($($FLOW_SOLVER 2 < "$graph" 2>/dev/null))
+    labels+=("solver:fattest-path")
+
+    results+=($($FLOW_BOOST < "$graph" 2>/dev/null))
+    labels+=("boost")
 
     # Verify all results match
     all_match=true
@@ -41,8 +52,10 @@ for graph in "${TEST_GRAPHS[@]}"; do
         printf "${GREEN}PASS${NC} (%d)\n" "${results[0]}"
     else
         printf "${RED}FAIL${NC} ("
-        printf "%s=%d " "${ALGORITHMS[@]##*/}" "${results[@]}"
-        printf "\b)\n"  # Remove trailing space
+        for ((i=0; i<${#results[@]}; i++)); do
+            printf "%s=%s " "${labels[i]}" "${results[i]}"
+        done
+        printf "\b)\n"  
     fi
 done
 
