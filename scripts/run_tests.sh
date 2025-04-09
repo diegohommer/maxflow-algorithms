@@ -4,7 +4,7 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 # Define paths relative to script location
-GRAPH_DIR="${SCRIPT_DIR}/../data/graphs"
+GRAPH_DIR="${1:-${SCRIPT_DIR}/../data/graphs}" # default run all graphs inside data
 TEST_GRAPHS=($(find "$GRAPH_DIR" -type f))
 FLOW_SOLVER="${SCRIPT_DIR}/../bin/flow_solver"
 FLOW_BOOST="${SCRIPT_DIR}/../bin/flow_boost"
