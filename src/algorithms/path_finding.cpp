@@ -118,8 +118,8 @@ FlowPath modified_dijkstra_path(Graph& graph, int source, int sink){
     std::vector<Edge*> parent(graph.get_total_vertices(), nullptr);
     std::vector<int> capacities(num_verts, 0);
 
-    // Initialize priority queue (4-Ary MaxHeap)
-    KHeap priority_queue(num_verts,4);
+    // Initialize priority queue (8-Ary MaxHeap)
+    KHeap priority_queue(num_verts,8);
     priority_queue.insert(source, std::numeric_limits<int>::max(), nullptr);
 
     // Run Customized Dijkstra to attempt to find fattest path 

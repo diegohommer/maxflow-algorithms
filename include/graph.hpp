@@ -6,10 +6,10 @@
 #include <vector>
 
 struct Edge {
-    int to, capacity, flow, reverse_idx;
+    int to, capacity, reverse_idx;
 
     Edge(int t, int cap, int f, int rev)
-    : to(t), capacity(cap), flow(f), reverse_idx(rev) {}
+    : to(t), capacity(cap), reverse_idx(rev) {}
 };
 
 class Graph {
