@@ -25,16 +25,22 @@ int display_usage_tutorial(char const *program_name) {
     return -1;
 }
 
-int single_run_mode(int algorithm_index) {
-    Algorithm algo;
-
-    switch (algorithm_index) {
-        case 0: algo = Algorithm::EdmondsKarp; break;
-        case 1: algo = Algorithm::RandomizedDFS; break;
-        case 2: algo = Algorithm::FattestPath; break;
-        default: return display_usage_tutorial("");  // Invalid algorithm index
+void log_stats(Algorithm algo, FordResult result, std::filesystem::path output_dir){
+    // Setup output file
+    std::ofstream output_file(output_dir);
+    
+    switch(algo){
+        case Algorithm::EdmondsKarp:
+            ;
+        case Algorithm::RandomizedDFS:
+            ;
+        case Algorithm::FattestPath:
+            ;
     }
+    return;
+}
 
+int single_run_mode(Algorithm algo) {
     Graph graph(std::cin);
     FordResult result = ford_fulkerson(graph, graph.get_source(), graph.get_sink(), algo);
 
@@ -42,7 +48,7 @@ int single_run_mode(int algorithm_index) {
     return 0;
 }
 
-int benchmark_mode(char const* input_path, char const* output_name) {
+int benchmark_mode(Algorithm algo, char const* input_path, char const* output_name) {
     // Read all .graph files from the input folder into memory
     std::vector<Graph> graphs;
     for (const auto& entry : std::filesystem::directory_iterator(input_path)) {
@@ -58,15 +64,11 @@ int benchmark_mode(char const* input_path, char const* output_name) {
     output_dir /= output_name; 
     std::filesystem::create_directories(output_dir.parent_path());
 
-    // Setup output file
-    std::ofstream output_file(output_dir);
-    if (!output_file.is_open()) {
-        std::cerr << "Error: Could not open output file " << output_dir << "\n";
-        return 1;
+    // Run and log stats of each graph over the selected algorithm
+    for (auto& graph : graphs){
+        FordResult result = ford_fulkerson(graph ,graph.get_source(), graph.get_sink(), algo);
+        log_stats(algo, result, output_dir);
     }
-
-    // Write headers to the output file
-    output_file << "Graph,Algorithm Result\n";
 
     return 0;
 }
@@ -76,12 +78,20 @@ int main(int argc, char const *argv[]) {
         return display_usage_tutorial(argv[0]);
     }
 
+    Algorithm algo;
+    switch (std::stoi(argv[1])) {
+        case 0: algo = Algorithm::EdmondsKarp; break;
+        case 1: algo = Algorithm::RandomizedDFS; break;
+        case 2: algo = Algorithm::FattestPath; break;
+        default: return display_usage_tutorial(argv[0]); 
+    }
+
     if (argc == 2){
-        return single_run_mode(std::stoi(argv[1]));
+        return single_run_mode(algo);
     }
     
     if (argc == 4) {
-        return benchmark_mode(argv[2], argv[3]);
+        return benchmark_mode(algo, argv[2], argv[3]);
     }
 
     return -1;

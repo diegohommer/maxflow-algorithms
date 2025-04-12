@@ -4,6 +4,7 @@ FordResult ford_fulkerson(Graph& graph, int source, int sink, Algorithm algo){
     int max_flow = 0;
     int iterations = 0;
     bool exists_path = false;
+    IterationStats stats;
 
     SearchFunction find_path = get_search_function(algo);
 
@@ -35,7 +36,7 @@ FordResult ford_fulkerson(Graph& graph, int source, int sink, Algorithm algo){
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
     double r = double(iterations) / compute_max_iterations(graph, source, algo);
-    return FordResult{ max_flow, iterations, duration, r};
+    return FordResult{ max_flow, iterations, duration, r };
 }
 
 SearchFunction get_search_function(Algorithm algo) {
@@ -77,3 +78,24 @@ int compute_source_capacity_bound(Graph& graph, int source) {
     }
     return bound;
 };
+
+void log_iteration_stats(IterationStats& stats, const PathStats& path_stats){
+    if (path_stats.visited_verts != 0)
+        stats.visited_vert_per_iter.emplace_back(path_stats.visited_verts);
+
+    if (path_stats.visited_arcs != 0)
+        stats.visited_arcs_per_iter.emplace_back(path_stats.visited_arcs);
+
+    if (path_stats.path_length != 0)
+        stats.path_lengths_per_iter.emplace_back(path_stats.path_length);
+
+    if (path_stats.inserts != 0)
+        stats.inserts_per_iter.emplace_back(path_stats.inserts);
+
+    if (path_stats.deletemaxes != 0)
+        stats.deletemaxes_per_iter.emplace_back(path_stats.deletemaxes);
+
+    if (path_stats.updates != 0)
+        stats.updates_per_iter.emplace_back(path_stats.updates);
+
+}
