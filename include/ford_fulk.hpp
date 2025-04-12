@@ -28,20 +28,16 @@ struct IterationStats {
 struct FordResult {
     int max_flow;             // Maximum flow found by the algorithm
     int iterations;           // I: total number of augmenting iterations
-    long long duration_ms;    // Time in milliseconds
-
     double r;                 // I / Ī: ratio to theoretical max iterations
-
-    int total_vertices;       // Total number of vertices (n)
-    int total_arcs;           // Total number of arcs (m)
+    long long duration_ms;    // Time in milliseconds
 
     IterationStats stats;     // Per-iteration statistics
 };
 
-FordResult ford_fulkerson(Graph& graph, int source, int sink, Algorithm algo);
+FordResult ford_fulkerson(Graph& graph, int source, int sink, Algorithm algo, bool should_get_stats);
 SearchFunction get_search_function(Algorithm algo);
 int compute_max_iterations(Graph& graph, int source, Algorithm algo);
 int compute_source_capacity_bound(Graph& graph, int source);
-void log_iteration_stats(IterationStats stats, PathStats path_stats);
+void log_iteration_stats(IterationStats& stats, PathStats& path_stats);
 
 #endif // FORD_FULK_H

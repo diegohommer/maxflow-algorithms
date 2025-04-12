@@ -1,6 +1,6 @@
 #include "ford_fulk.hpp"
 
-FordResult ford_fulkerson(Graph& graph, int source, int sink, Algorithm algo){
+FordResult ford_fulkerson(Graph& graph, int source, int sink, Algorithm algo, bool should_get_stats){
     int max_flow = 0;
     int iterations = 0;
     bool exists_path = false;
@@ -30,13 +30,18 @@ FordResult ford_fulkerson(Graph& graph, int source, int sink, Algorithm algo){
                 }
             }
         }
+        if(should_get_stats)
+            log_iteration_stats(stats,bfs_result.stats);
 
     } while (exists_path);
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
-    double r = double(iterations) / compute_max_iterations(graph, source, algo);
-    return FordResult{ max_flow, iterations, duration, r };
+    double r = 0.0;
+    if(should_get_stats)
+        r = double(iterations) / compute_max_iterations(graph, source, algo);
+
+    return FordResult{ max_flow, iterations, r, duration, stats };
 }
 
 SearchFunction get_search_function(Algorithm algo) {
