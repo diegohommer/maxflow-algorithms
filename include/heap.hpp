@@ -9,7 +9,7 @@
 struct HeapNode {
     int vertex;
     int capacity;
-    Edge* pred_edge;
+    Edge* incoming_edge;
     bool operator>(const HeapNode& other) const {
         return capacity > other.capacity;  
     }
@@ -21,8 +21,8 @@ public:
 
     int get_vertex_cap(int vertex);
     HeapNode deletemax();
-    void update(int vertex, int capacity, Edge* pred);
-    void insert(int vertex, int capacity, Edge* pred);
+    void update(int vertex, int capacity, Edge* incoming_edge);
+    void insert(int vertex, int capacity, Edge* incoming_edge);
     int get_size();
 private:
     int k;
@@ -30,8 +30,8 @@ private:
     std::vector<int> pos;
 
     void swap_nodes(int index, int index2);
-    int heapify_up(int index);
-    int heapify_down(int index);
+    void heapify_up(int index);
+    void heapify_down(int index);
 };
 
 #endif // KHEAP_H

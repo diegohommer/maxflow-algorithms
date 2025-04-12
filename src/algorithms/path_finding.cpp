@@ -114,9 +114,7 @@ FlowPath randomized_dfs_path(Graph& graph, int source, int sink){
 FlowPath modified_dijkstra_path(Graph& graph, int source, int sink){
     int num_verts = graph.get_total_vertices();
 
-    // Initialize capacity map
-    std::vector<Edge*> parent(graph.get_total_vertices(), nullptr);
-    std::vector<int> capacities(num_verts, 0);
+    std::vector<Edge*> parent_edges(graph.get_total_vertices(), nullptr);
 
     // Initialize priority queue (8-Ary MaxHeap)
     KHeap priority_queue(num_verts,8);
@@ -127,20 +125,18 @@ FlowPath modified_dijkstra_path(Graph& graph, int source, int sink){
         HeapNode current = priority_queue.deletemax();
         int v = current.vertex;
 
-        capacities[v] = current.capacity;
-        parent[v] = current.pred_edge;
-
+        parent_edges[v] = current.incoming_edge;
         if (v == sink) break;
     
         // Process each neighbor of the current vertex
         for (Edge& edge : graph.get_neighbors(v)) {
             int u = edge.to;
     
-            if ((u != source) && (!parent[u]) && (edge.capacity > 0)) {
+            if ((u != source) && (!parent_edges[u]) && (edge.capacity > 0)) {
                 int new_bottleneck = std::min(current.capacity, edge.capacity);
                 int existing_bottleneck = priority_queue.get_vertex_cap(u);
     
-                if (existing_bottleneck == std::numeric_limits<int>::max()) {  
+                if (existing_bottleneck == -1) {  
                     priority_queue.insert(u, new_bottleneck, &edge);
                 } else if (existing_bottleneck < new_bottleneck) {  
                     priority_queue.update(u, new_bottleneck, &edge);
@@ -150,7 +146,7 @@ FlowPath modified_dijkstra_path(Graph& graph, int source, int sink){
     }
 
     // Return empty stack and 0 if didn't find a path
-    if (!parent[sink]) {
+    if (!parent_edges[sink]) {
         return FlowPath { std::stack<Edge*>{}, 0 }; 
     }
 
@@ -159,7 +155,7 @@ FlowPath modified_dijkstra_path(Graph& graph, int source, int sink){
 
     // Trace back from sink to source calculating bottleneck
     for (int current = sink; current != source; ) {
-        Edge* edge = parent[current];
+        Edge* edge = parent_edges[current];
         path.push(edge);
         bottleneck = std::min(bottleneck, edge->capacity);
         current = graph.get_reverse(*edge)->to;

@@ -7,6 +7,7 @@ FordResult ford_fulkerson(Graph& graph, int source, int sink, Algorithm algo){
 
     SearchFunction find_path = get_search_function(algo);
 
+    auto start = std::chrono::high_resolution_clock::now();
     do {
         FlowPath bfs_result = find_path(graph, source, sink);
         exists_path = !bfs_result.path.empty();
@@ -22,32 +23,19 @@ FordResult ford_fulkerson(Graph& graph, int source, int sink, Algorithm algo){
 
                 path_edge->capacity -= flow;
                 graph.get_reverse(*path_edge)->capacity += flow;
+
+                if(path_edge->capacity == 0){
+                    path_edge->num_criticals++;
+                }
             }
         }
 
     } while (exists_path);
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
     double r = double(iterations) / compute_max_iterations(graph, source, algo);
-    return FordResult{ max_flow, iterations, r };
-}
-
-FordResult edmonds_karp(Graph& graph, int source, int sink) {
-    int n = graph.get_total_vertices();
-    int m = graph.get_total_arcs();
-    int max_it = (n * m) / 2;
-    return ford_fulkerson(graph, source, sink, Algorithm::EdmondsKarp);
-}
-
-FordResult randomized_ford_fulkerson(Graph& graph, int source, int sink) {
-    int max_it = compute_source_capacity_bound(graph, source);
-    return ford_fulkerson(graph, source, sink, Algorithm::RandomizedDFS);
-}
-
-FordResult fattest_path(Graph& graph, int source, int sink) {
-    int C = std::max(1, compute_source_capacity_bound(graph, source));
-    int m = graph.get_total_arcs();
-    int max_it = int(m * std::log2(C));
-    return ford_fulkerson(graph, source, sink, Algorithm::FattestPath);
+    return FordResult{ max_flow, iterations, duration, r};
 }
 
 SearchFunction get_search_function(Algorithm algo) {

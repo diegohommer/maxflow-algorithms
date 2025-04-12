@@ -79,34 +79,30 @@ int Graph::get_total_arcs() const {
     return this->num_arcs_;
 }
 
+Edge* Graph::get_forward(int source_vertex, int edge_index){
+    return &adjacency_list[source_vertex][edge_index];
+}
+
 Edge* Graph::get_reverse(Edge edge){
     return &adjacency_list[edge.to][edge.reverse_idx];
 }
 
 void Graph::add_edge(int origin, int destiny, int capacity) {
-    // Check if reverse edge already exists
-    int reverse_idx = -1;
-    for (int i = 0; i < adjacency_list[destiny].size(); ++i) {
-        if (adjacency_list[destiny][i].to == origin) {
-            reverse_idx = i;
+    // Check if forward edge already exists
+    int forward_idx = -1;
+    for (int i = 0; i < adjacency_list[origin].size(); ++i) {
+        if (adjacency_list[origin][i].to == destiny) {
+            forward_idx = i;
             break;
         }
     }
 
-    if (reverse_idx == -1) {
-        // Add forward and reverse edges 
-        adjacency_list[origin].emplace_back(destiny, capacity, 0, -1);
-        adjacency_list[destiny].emplace_back(origin, 0, 0, -1);
-
-        // Make their reverse indexes reference each other
-        int forward_idx = adjacency_list[origin].size() - 1;
-        reverse_idx = adjacency_list[destiny].size() - 1;
-
-        adjacency_list[origin][forward_idx].reverse_idx = reverse_idx;
-        adjacency_list[destiny][reverse_idx].reverse_idx = forward_idx;
+    if (forward_idx == -1) {
+        // Add new forward and reverse edges
+        adjacency_list[origin].emplace_back(destiny, capacity, adjacency_list[destiny].size());
+        adjacency_list[destiny].emplace_back(origin, 0, adjacency_list[origin].size() - 1);
     } else {
-        // Update existing forward edge's capacity
-        int forward_idx = adjacency_list[destiny][reverse_idx].reverse_idx;
+        // Update existing forward edge
         adjacency_list[origin][forward_idx].capacity += capacity;
     }
 }
