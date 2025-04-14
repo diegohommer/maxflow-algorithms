@@ -13,6 +13,7 @@ struct GraphMetrics {
     int m;             // Number of arcs in the graph
     double r;          // Ratio of iterations to maximum iterations (efficiency)
     double time_ms;    // Duration of the algorithm execution in milliseconds
+    double nor_time;   // Normalized duration of the algorithm (based on worst case complexity)
     double avg_l;      // Average path length (in terms of number of edges) per iteration
     double avg_s;      // Average fraction of vertices visited per iteration (s_i)
     double avg_t;      // Average fraction of arcs visited per iteration (t_i)

@@ -4,7 +4,7 @@
 namespace Logger {
 
     void log_stats_header(const Algorithm& algo, std::ofstream& output_file) {
-        output_file << "n,m,r,T(ms),avg_l,";
+        output_file << "n,m,r,T(ms),normalized_T,avg_l,";
         switch (algo) {
             case Algorithm::EdmondsKarp:
                 output_file << "C,avg_crit,avg_s,avg_t";
@@ -28,6 +28,7 @@ namespace Logger {
                     << stats.m << "," 
                     << stats.r << "," 
                     << stats.time_ms << ","
+                    << stats.nor_time << ","
                     << stats.avg_l << ",";
 
         switch (algo) {

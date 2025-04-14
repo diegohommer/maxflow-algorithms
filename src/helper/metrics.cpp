@@ -89,6 +89,7 @@ namespace Metrics {
         }
 
         const double time_ms = result.duration_ms;
+        const double nor_time = time_ms / static_cast<double>(static_cast<long long>(n) * m * (n + m));
 
         const double avg_l = std::accumulate(
             result.stats.path_lengths_per_iter.begin(),
@@ -101,6 +102,7 @@ namespace Metrics {
         metrics.m = m;
         metrics.r = r;
         metrics.time_ms = time_ms;
+        metrics.nor_time = nor_time;
         metrics.avg_l = avg_l;
 
         switch (algo) {
