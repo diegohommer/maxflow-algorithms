@@ -14,8 +14,9 @@ LDFLAGS := -fopenmp  # Added for OpenMP linking
 # ========== Source Files ==========
 ALG_SRCS := $(wildcard $(SDIR)/algorithms/*.cpp)
 DS_SRCS := $(wildcard $(SDIR)/data_structs/*.cpp)
+HELP_SRCS := $(wildcard $(SDIR)/helper/*.cpp)
 
-MAIN_SRCS := $(SDIR)/main.cpp $(ALG_SRCS) $(DS_SRCS)
+MAIN_SRCS := $(SDIR)/main.cpp $(HELP_SRCS) $(ALG_SRCS) $(DS_SRCS)
 BOOST_SRCS := $(SDIR)/boost_maxflow.cpp
 GEN_SRCS := $(SDIR)/generator/new_washington.c
 

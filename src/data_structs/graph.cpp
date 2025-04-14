@@ -59,7 +59,7 @@ void Graph::read_dimacs(std::istream& in) {
     //           << get_total_arcs() << std::endl;
   }
 
-std::vector<Edge>& Graph::get_neighbors(int vertex) {
+std::vector<Edge>& Graph::get_outgoing_edges(int vertex) {
     return adjacency_list[vertex];
 }
 

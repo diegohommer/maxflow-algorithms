@@ -15,11 +15,11 @@ FlowPath bfs_path(Graph& graph, int source, int sink){
         q.pop();
         stats.visited_verts++;
 
-        for (Edge& edge : graph.get_neighbors(v)){
+        for (Edge& edge : graph.get_outgoing_edges(v)){
             int u = edge.to;
-            stats.visited_arcs++;
 
             if((u != source) && (!parent_edges[u]) && (edge.capacity > 0)){
+                stats.visited_arcs++;
                 parent_edges[u] = &edge;
         
                 if(u == sink){
@@ -72,11 +72,10 @@ FlowPath randomized_dfs_path(Graph& graph, int source, int sink){
         stats.visited_verts++;
 
         // Get neighbors and shuffle in-place (no copies)
-        auto& neighbors = graph.get_neighbors(v);
+        auto& neighbors = graph.get_outgoing_edges(v);
         std::vector<Edge*> neighbor_ptrs;
         neighbor_ptrs.reserve(neighbors.size());
         for (Edge& e : neighbors) {
-            stats.visited_arcs++;
             if (e.capacity > 0) neighbor_ptrs.push_back(&e);
         }
         std::shuffle(neighbor_ptrs.begin(), neighbor_ptrs.end(), rng);
@@ -85,6 +84,7 @@ FlowPath randomized_dfs_path(Graph& graph, int source, int sink){
             int u = edge->to;
 
             if((u != source) && (!parent_edges[u]) && (edge->capacity > 0)){
+                stats.visited_arcs++;
                 parent_edges[u] = edge;
         
                 if(u == sink){
@@ -137,11 +137,11 @@ FlowPath modified_dijkstra_path(Graph& graph, int source, int sink){
         if (v == sink) break;
     
         // Process each neighbor of the current vertex
-        for (Edge& edge : graph.get_neighbors(v)) {
+        for (Edge& edge : graph.get_outgoing_edges(v)) {
             int u = edge.to;
-            stats.visited_arcs++;
     
             if ((u != source) && (!parent_edges[u]) && (edge.capacity > 0)) {
+                stats.visited_arcs++;
                 int new_bottleneck = std::min(current.capacity, edge.capacity);
                 int existing_bottleneck = priority_queue.get_vertex_cap(u);
     

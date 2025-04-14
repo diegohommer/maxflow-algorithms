@@ -1,4 +1,5 @@
 #include "ford_fulk.hpp"
+#include "logger.hpp"
 #include <fstream>
 #include <filesystem>
 
@@ -25,35 +26,6 @@ int display_usage_tutorial(char const *program_name) {
     return -1;
 }
 
-void log_stats_header(Algorithm&algo, std::ofstream& output_file){
-    output_file << "n,m,r,T(ms),avg_l,";
-    switch(algo){
-        case Algorithm::EdmondsKarp:
-            output_file << "C,avg_crit,s,t" << std::endl;
-            break;
-        case Algorithm::RandomizedDFS:
-            output_file << "s,t" << std::endl;
-            break;
-        case Algorithm::FattestPath:
-            output_file << "I,D,U" << std::endl;
-            break;
-    }
-    return;
-}
-
-void log_instance_stats(Graph& graph, Algorithm& algo, FordResult& result, std::ofstream& output_file){
-    
-    switch(algo){
-        case Algorithm::EdmondsKarp:
-            break;
-        case Algorithm::RandomizedDFS:
-            break;
-        case Algorithm::FattestPath:
-            break;
-    }
-    return;
-}
-
 int single_run_mode(Algorithm algo) {
     Graph graph(std::cin);
     FordResult result = ford_fulkerson(graph, graph.get_source(), graph.get_sink(), algo, false);
@@ -75,17 +47,18 @@ int benchmark_mode(Algorithm algo, char const* input_path, char const* output_na
 
     // Construct the output file path
     std::filesystem::path output_dir = "./data/outputs/";
-    output_dir /= output_name; 
+    output_dir /= output_name;
     std::filesystem::create_directories(output_dir.parent_path());
 
     // Setup output file
     std::ofstream output_file(output_dir);
-    log_stats_header(algo, output_file);
+    Logger::log_stats_header(algo, output_file);
 
     // Run and log stats of each graph over the selected algorithm
     for (auto& graph : graphs){
         FordResult result = ford_fulkerson(graph ,graph.get_source(), graph.get_sink(), algo, true);
-        log_instance_stats(graph, algo, result, output_file);
+        GraphMetrics metrics = Metrics::compute_graph_metrics(graph, algo, result);
+        Logger::log_instance_stats(metrics, algo, output_file);
     }
 
     return 0;

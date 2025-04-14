@@ -5,36 +5,63 @@
 #include <sstream>
 #include <vector>
 
+// Edge structure representing a directed edge with capacity, reverse index, and critical edge count
 struct Edge {
-    int to;                // Destination node
-    int capacity;          // Residual capacity of the edge
-    int reverse_idx;       // Index of the reverse edge in the adjacency list
-    int num_criticals = 0; // Counts how many times this edge was critical
+    int to;                // Destination node of the edge
+    int capacity;          // Residual capacity of the edge (how much flow it can still carry)
+    int reverse_idx;       // Index of the reverse edge in the adjacency list for residual graph
+    int num_criticals = 0; // Counts how many times this edge was critical in the flow algorithm
 
     Edge(int t, int cap, int rev)
     : to(t), capacity(cap), reverse_idx(rev) {}
 };
 
+// Graph class represents a directed graph using an adjacency list and supports various graph operations
 class Graph {
 public:
+    // Constructor that reads the graph data from an input stream (e.g., a file or stdin)
     Graph(std::istream& in);
+    
+    // Function to read a DIMACS-format graph from an input stream
     void read_dimacs(std::istream& in);
+    
+    // Retrieves the forward edge from a given vertex and edge index in the adjacency list
     Edge* get_forward(int source_vertex, int edge_index);
+    
+    // Retrieves the reverse edge corresponding to a given edge in the adjacency list
     Edge* get_reverse(Edge edge);
-    std::vector<Edge>& get_neighbors(int vertex);
+    
+    // Retrieves the outgoing edges of a given vertex
+    std::vector<Edge>& get_outgoing_edges(int vertex);
+    
+    // Retrieves the source vertex of the graph
     int get_source() const;
+    
+    // Retrieves the sink vertex of the graph
     int get_sink() const;
+    
+    // Retrieves the total number of vertices in the graph
     int get_total_vertices() const;
+    
+    // Retrieves the total number of arcs (edges) in the graph
     int get_total_arcs() const;
 
 private:
+    // Adjacency list to store the graph's edges: adjacency_list[vertex] contains edges from that vertex
     std::vector<std::vector<Edge>> adjacency_list;
+    
+    // Number of vertices and edges (arcs) in the graph
     unsigned num_vertices_;
     unsigned num_arcs_;
+    
+    // The source and sink vertices used in flow algorithms (such as Ford-Fulkerson)
     int source;
     int sink;
 
+    // Helper function to resize the graph's adjacency list to accommodate a new number of vertices
     void resize(int n);
+
+    // Helper function to add a directed edge between two vertices with a specified capacity
     void add_edge(int origin, int destiny, int capacity);
 };
 
