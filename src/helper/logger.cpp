@@ -44,7 +44,9 @@ namespace Logger {
                 break;
             }
             case Algorithm::FattestPath:
-                // Implement if needed
+                output_file << stats.I << "," 
+                            << stats.D << ","
+                            << stats.U;
                 break;
             default:
                 throw std::runtime_error("Unknown algorithm in log_instance_stats");

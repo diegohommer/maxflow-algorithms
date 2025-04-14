@@ -118,7 +118,9 @@ namespace Metrics {
                 break;
             }
             case Algorithm::FattestPath: {
-                // Implement if needed, or remove if not used
+                metrics.I = compute_average(result.stats.inserts_per_iter, result.iterations);
+                metrics.D = compute_average(result.stats.deletemaxes_per_iter, result.iterations);
+                metrics.U = compute_average(result.stats.updates_per_iter, result.iterations);
                 break;
             }
             default:

@@ -54,18 +54,21 @@ SearchFunction get_search_function(Algorithm algo) {
 }
 
 void store_iteration_stats(IterationStats& stats, const PathStats& path_stats, int n, int m){
-    stats.s_per_iter.emplace_back(static_cast<double>(path_stats.visited_verts) / n);
-    stats.t_per_iter.emplace_back(static_cast<double>(path_stats.visited_arcs) / m);
+    if(path_stats.visited_verts != 0)
+        stats.s_per_iter.emplace_back(static_cast<double>(path_stats.visited_verts) / n);
+
+    if(path_stats.visited_arcs != 0)
+        stats.t_per_iter.emplace_back(static_cast<double>(path_stats.visited_arcs) / m);
 
     if (path_stats.path_length != 0)
         stats.path_lengths_per_iter.emplace_back(path_stats.path_length);
 
     if (path_stats.inserts != 0)
-        stats.inserts_per_iter.emplace_back(path_stats.inserts);
+        stats.inserts_per_iter.emplace_back(static_cast<double>(path_stats.inserts) / n);
 
     if (path_stats.deletemaxes != 0)
-        stats.deletemaxes_per_iter.emplace_back(path_stats.deletemaxes);
+        stats.deletemaxes_per_iter.emplace_back(static_cast<double>(path_stats.deletemaxes) / n);
 
     if (path_stats.updates != 0)
-        stats.updates_per_iter.emplace_back(path_stats.updates);
+        stats.updates_per_iter.emplace_back(static_cast<double>(path_stats.updates) / m);
 }

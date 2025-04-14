@@ -22,10 +22,10 @@ struct IterationStats {
     std::vector<double> t_per_iter;  // t_i = m′_i / m: fraction of arcs visited per iteration
     std::vector<int> path_lengths_per_iter;  // ℓ_i: length of each augmenting path
 
-    // Additional stats specifically for the Fattest Path (Dijkstra-style) approach
-    std::vector<int> inserts_per_iter;       // Number of insertions into the heap during an iteration
-    std::vector<int> deletemaxes_per_iter;   // Number of deletions (removals of max capacity nodes) per iteration
-    std::vector<int> updates_per_iter;       // Number of heap updates during an iteration
+    // Normalized heap operation stats for Fattest Path
+    std::vector<double> inserts_per_iter;     // iᵢ = insertsᵢ / n
+    std::vector<double> deletemaxes_per_iter; // dᵢ = deletemaxesᵢ / n
+    std::vector<double> updates_per_iter;     // uᵢ = updatesᵢ / m
 };
 
 // Structure holding the result of the Ford-Fulkerson algorithm, including the maximum flow, 
