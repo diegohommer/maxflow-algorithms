@@ -32,6 +32,7 @@ struct IterationStats {
 // the number of iterations, and per-iteration statistics.
 struct FordResult {
     int max_flow;             // The maximum flow found by the algorithm
+    int flow_upper_bound;     // Upper limit C of flow that can passed from source to sink
     int iterations;           // The total number of augmenting iterations performed
     long long duration_ms;    // Total time taken for the algorithm in milliseconds
 

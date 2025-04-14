@@ -33,6 +33,9 @@ public:
     
     // Retrieves the outgoing edges of a given vertex
     std::vector<Edge>& get_outgoing_edges(int vertex);
+
+    // A utility function to compute an upper bound for the flow that can be sent 
+    int compute_upper_flow_bound();
     
     // Retrieves the source vertex of the graph
     int get_source() const;

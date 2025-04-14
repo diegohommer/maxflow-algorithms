@@ -63,6 +63,22 @@ std::vector<Edge>& Graph::get_outgoing_edges(int vertex) {
     return adjacency_list[vertex];
 }
 
+int Graph::compute_upper_flow_bound() {
+    int src_limit = 0, sink_limit = 0;
+
+    // Sum capacities of edges *leaving* the source
+    for (const Edge& e : get_outgoing_edges(source)) {
+        src_limit += e.capacity;
+    }
+
+    // Sum capacities of edges *entering* the sink (via reverse edges of outgoing edges from sink)
+    for (const Edge& e : get_outgoing_edges(sink)) {
+        sink_limit += adjacency_list[e.to][e.reverse_idx].capacity;
+    }
+    
+    return std::min(src_limit, sink_limit);
+}
+
 int Graph::get_source() const{
     return this->source;
 }

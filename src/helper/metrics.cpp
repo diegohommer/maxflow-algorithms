@@ -2,7 +2,7 @@
 
 namespace Metrics {
 
-    long long compute_max_iterations(Graph& graph, int source, Algorithm algo) {
+    long long compute_max_iterations(Graph& graph, int source, Algorithm algo, int upper_limit = 0) {
         switch (algo) {
             case Algorithm::EdmondsKarp: {
                 const int n = graph.get_total_vertices();
@@ -10,25 +10,15 @@ namespace Metrics {
                 return std::max(1LL, (static_cast<long long>(n) * m) / 2);  // Use long long for safe multiplication
             }
             case Algorithm::RandomizedDFS: {
-                const int cap = compute_source_capacity_bound(graph, source);
-                return std::max(1, cap);
+                return std::max(1, upper_limit);
             }
             case Algorithm::FattestPath: {
-                const int C = std::max(1, compute_source_capacity_bound(graph, source));
                 const int m = graph.get_total_arcs();
-                return std::max(1LL, static_cast<long long>(m * std::log2(C)));
+                return std::max(1LL, static_cast<long long>(m * std::log2(upper_limit)));
             }
             default:
                 return 1;
         }
-    }
-
-    int compute_source_capacity_bound(Graph& graph, int source) {
-        int total = 0;
-        for (const Edge& e : graph.get_outgoing_edges(source)) {
-            total += e.capacity;
-        }
-        return total;
     }
 
     double compute_average(const std::vector<double>& elements, double total) {
@@ -82,8 +72,9 @@ namespace Metrics {
         const int m = graph.get_total_arcs();
         const int source = graph.get_source();
 
-        const double max_iterations = static_cast<double>(compute_max_iterations(graph, source, algo));
+        const double max_iterations = static_cast<double>(compute_max_iterations(graph, source, algo, result.flow_upper_bound));
         const double r = static_cast<double>(result.iterations) / max_iterations;
+        std::cout << max_iterations << " - " << result.iterations << std::endl;
         if (r < 0.0 || r > 1.0) {
             throw std::runtime_error("Iterations fractions (r) value out of expected range [0,1]");
         }

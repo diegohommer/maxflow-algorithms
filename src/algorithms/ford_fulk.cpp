@@ -7,6 +7,7 @@ FordResult ford_fulkerson(Graph& graph, int source, int sink, Algorithm algo, bo
     IterationStats stats;
 
     SearchFunction find_path = get_search_function(algo);
+    int flow_upper_bound = graph.compute_upper_flow_bound(); 
 
     auto start = std::chrono::high_resolution_clock::now();
     do {
@@ -37,7 +38,7 @@ FordResult ford_fulkerson(Graph& graph, int source, int sink, Algorithm algo, bo
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
-    return FordResult{ max_flow, iterations, duration, stats };
+    return FordResult{ max_flow, flow_upper_bound, iterations, duration, stats };
 }
 
 SearchFunction get_search_function(Algorithm algo) {

@@ -34,12 +34,15 @@ int single_run_mode(Algorithm algo) {
     return 0;
 }
 
-int benchmark_mode(Algorithm algo, char const* input_path, char const* output_name) {
+int benchmark_mode(Algorithm algo, const char* input_path, const char* output_name) {
     // Read all .graph files from the input folder into memory
     std::vector<Graph> graphs;
     for (const auto& entry : std::filesystem::directory_iterator(input_path)) {
         if (entry.is_regular_file() && entry.path().extension() == ".graph") {
             std::ifstream input(entry.path());
+            if (!input.is_open()) {
+                continue;  // Skip the current file if it can't be opened
+            }
             Graph graph(input);
             graphs.push_back(std::move(graph));
         }
@@ -48,20 +51,24 @@ int benchmark_mode(Algorithm algo, char const* input_path, char const* output_na
     // Construct the output file path
     std::filesystem::path output_dir = "./data/outputs/";
     output_dir /= output_name;
-    std::filesystem::create_directories(output_dir.parent_path());
+    std::filesystem::create_directories(output_dir.parent_path());  // Ensure the output directory exists
 
     // Setup output file
     std::ofstream output_file(output_dir);
-    Logger::log_stats_header(algo, output_file);
+    if (!output_file.is_open()) {
+        return -1;  // Return an error if output file can't be created
+    }
 
+    Logger::log_stats_header(algo, output_file); 
+    
     // Run and log stats of each graph over the selected algorithm
-    for (auto& graph : graphs){
-        FordResult result = ford_fulkerson(graph ,graph.get_source(), graph.get_sink(), algo, true);
+    for (auto& graph : graphs) {
+        FordResult result = ford_fulkerson(graph, graph.get_source(), graph.get_sink(), algo, true);
         GraphMetrics metrics = Metrics::compute_graph_metrics(graph, algo, result);
         Logger::log_instance_stats(metrics, algo, output_file);
     }
 
-    return 0;
+    return 0; 
 }
 
 int main(int argc, char const *argv[]) {
