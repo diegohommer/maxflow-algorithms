@@ -117,6 +117,7 @@ void Graph::add_edge(int origin, int destiny, int capacity) {
         // Add new forward and reverse edges
         adjacency_list[origin].emplace_back(destiny, capacity, adjacency_list[destiny].size());
         adjacency_list[destiny].emplace_back(origin, 0, adjacency_list[origin].size() - 1);
+        this->num_arcs_++;
     } else {
         // Update existing forward edge
         adjacency_list[origin][forward_idx].capacity += capacity;
