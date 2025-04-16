@@ -35,7 +35,7 @@ int single_run_mode(Algorithm algo) {
 }
 
 int benchmark_mode(Algorithm algo, const char* input_path, const char* output_name) {
-    const int num_runs = 15;
+    const int num_runs = 10;
     
     // Read all .graph files from the input folder into memory
     std::vector<Graph> graphs;
