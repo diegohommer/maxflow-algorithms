@@ -21,6 +21,9 @@ class Graph {
 public:
     // Constructor that reads the graph data from an input stream (e.g., a file or stdin)
     Graph(std::istream& in);
+
+    // Constructor to create a graph from another graph
+    Graph(Graph* graph);
     
     // Function to read a DIMACS-format graph from an input stream
     void read_dimacs(std::istream& in);

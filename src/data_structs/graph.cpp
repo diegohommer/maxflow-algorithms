@@ -59,6 +59,23 @@ void Graph::read_dimacs(std::istream& in) {
     //           << get_total_arcs() << std::endl;
   }
 
+// Copy constructor for the Graph class
+Graph::Graph(Graph* graph) {
+    // Copy the basic attributes
+    this->num_vertices_ = graph->num_vertices_;
+    this->num_arcs_ = graph->num_arcs_;
+    this->source = graph->source;
+    this->sink = graph->sink;
+
+    // Create a deep copy of the adjacency list
+    this->adjacency_list.resize(graph->adjacency_list.size());
+    for (size_t i = 0; i < graph->adjacency_list.size(); ++i) {
+        for (const Edge& edge : graph->adjacency_list[i]) {
+            this->adjacency_list[i].emplace_back(edge.to, edge.capacity, edge.reverse_idx);
+        }
+    }
+}
+
 std::vector<Edge>& Graph::get_outgoing_edges(int vertex) {
     return adjacency_list[vertex];
 }
