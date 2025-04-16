@@ -5,7 +5,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 GEN="${SCRIPT_DIR}/../bin/graph_generator"
 
 # Dataset argument (defaults to mesh)
-DATASET="${1:-square_mesh}"
+DATASET="${1:-mesh}"
 
 # Output directory
 TARGET="${SCRIPT_DIR}/../data/graphs/${DATASET}"
@@ -16,94 +16,60 @@ echo "Output dir: $TARGET"
 
 case "$DATASET" in
 
-    square_mesh)
+    mesh)
+        # Constants
         graph_type=1
         C=1000
         count=1
 
-        # r = c = ⌊sqrt(2^(i+2))⌋ for i = 1..14
-        # n = rc+2 ≈ 2^(i+2) for i = 1..14
         rc_values=(
-            "3 3"
+            # n = 16
             "4 4"
-            "6 6"
-            "8 8"
-            "11 11"
-            "16 16"
-            "23 23"
-            "32 32"
-            "45 45"
-            "64 64"
-            "91 91"
-            "128 128"
-            "181 181"
-            "256 256"
-        )
-        count=1
-        for entry in "${rc_values[@]}"; do
-            read -r r c <<< "$entry"
-            out="${TARGET}/test_${count}.graph"
-            echo "Generating $out (r=$r, c=$c, C=$C)..."
-            $GEN $graph_type $r $c $C "$out"
-            ((count++))
-        done
-        ;;
-
-    vertical_mesh)
-        graph_type=1
-        C=1000
-        count=1
-
-        # n = r*c = 2^(i+2) for i = 1..14
-        rc_values=(
-            "4 2"
             "8 2"
-            "8 4"
-            "16 4"
-            "16 8"
-            "32 8"
-            "32 16"
-            "64 16"
-            "64 32"
-            "128 32"
-            "128 64"
-            "256 64"
-            "256 128"
-            "512 128"
-        )
-        count=1
-        for entry in "${rc_values[@]}"; do
-            read -r r c <<< "$entry"
-            out="${TARGET}/test_${count}.graph"
-            echo "Generating $out (r=$r, c=$c, C=$C)..."
-            $GEN $graph_type $r $c $C "$out"
-            ((count++))
-        done
-        ;;
-
-    horizontal_mesh)
-        graph_type=1
-        C=1000
-        count=1
-
-        # n = r*c = 2^(i+2) for i = 1..14
-        rc_values=(
-            "2 4"
             "2 8"
-            "4 8"
+
+            # n = 64
+            "8 8"
             "4 16"
-            "8 16"
-            "8 32"
-            "16 32"
+            "16 4"
+
+            # n = 256
+            "16 16"
+            "24 6"
+            "6 24"
+
+            # n = 576
+            "24 24"
+            "48 12"
+            "12 48"
+
+            # n = 1024
+            "32 32"
+            "64 16"
             "16 64"
-            "32 64"
+
+            # n = 2116
+            "46 46"
+            "92 23"
+            "23 92"
+
+            # n = 4096
+            "64 64"
+            "128 32"
             "32 128"
-            "64 128"
+
+            # n = 8100
+            "90 90"
+            "180 45"
+            "45 180"
+
+            # n = 16384
+            "128 128"
+            "256 64"
             "64 256"
-            "128 256"
-            "128 512"
         )
-        count=1
+
+        # Generate Unified Meshes (scaled further, 24 graphs)
         for entry in "${rc_values[@]}"; do
             read -r r c <<< "$entry"
             out="${TARGET}/test_${count}.graph"
@@ -118,26 +84,56 @@ case "$DATASET" in
         C=1000
         count=1
 
-        nd_values=(           
-            "63 2"
-            "63 8"
-            "63 32"
-            "255 2"
-            "255 16"
-            "255 128"
-            "1023 2"
-            "1023 32"
-            "1023 512"
-            "4095 2"
-            "4095 64"
-            "4095 128"
-            "8191 2"
-            "8191 90"  
-            "8191 180"
+        nd_values=(
+            # n = 16 (+2)           
+            "8 2"
+            "8 4"
+            "8 8"
+
+            # n = 64 (+2)
+            "32 2"
+            "32 16"
+            "32 32"
+
+            # n = 256 (+2)
+            "128 2"
+            "128 16"
+            "128 32"
+
+            # n = 288 (+2)
+            "288 2"
+            "288 16"
+            "288 32"
+
+            # n = 512 (+2)
+            "512 2"
+            "512 16"
+            "512 32"
+
+            # n = 1058 (+2)
+            "1058 2"
+            "1058 16"
+            "1058 32"
+
+            # n = 2048 (+2)
+            "2048 2"
+            "2048 16"
+            "2048 32"
+
+            # n = 4050 (+2)
+            "4050 2"
+            "4050 16"
+            "4050 32"
+
+            # n = 8192 (+2)
+            "8192 2"
+            "8192 16"
+            "8192 32"
         )
+
         count=1
         for entry in "${nd_values[@]}"; do
-            read -r n d <<< "$entry"
+            read -r n d c <<< "$entry"
             out="${TARGET}/test_${count}.graph"
             echo "Generating $out (n=$n, d=$d, C=$C)..."
             $GEN $graph_type $n $d $C "$out"
@@ -150,23 +146,51 @@ case "$DATASET" in
         C=1000
         count=1
 
-        # r = c = ⌊sqrt(2^(i+2))⌋ for i = 1..14
-        # n = rc+2 ≈ 2^(i+2) for i = 1..14
         rc_values=(
-            "3 3"
+            # n = 16
             "4 4"
-            "6 6"
+            "8 2"
+            "3 8"
+
+            # n = 64
             "8 8"
-            "11 11"
+            "4 16"
+            "16 4"
+
+            # n = 256
             "16 16"
-            "23 23"
+            "24 6"
+            "6 24"
+
+            # n = 576
+            "24 24"
+            "48 12"
+            "12 48"
+
+            # n = 1024
             "32 32"
-            "45 45"
+            "64 16"
+            "16 64"
+
+            # n = 2116
+            "46 46"
+            "92 23"
+            "23 92"
+
+            # n = 4096
             "64 64"
-            "91 91"
+            "128 32"
+            "32 128"
+
+            # n = 8100
+            "90 90"
+            "180 45"
+            "45 180"
+
+            # n = 16384
             "128 128"
-            "181 181"
-            "256 256"
+            "256 64"
+            "64 256"
         )
         count=1
         for entry in "${rc_values[@]}"; do
