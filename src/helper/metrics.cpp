@@ -74,7 +74,6 @@ namespace Metrics {
 
         const double max_iterations = static_cast<double>(compute_max_iterations(graph, source, algo, result.flow_upper_bound));
         const double r = static_cast<double>(result.iterations) / max_iterations;
-        std::cout << max_iterations << " - " << result.iterations << std::endl;
         if (r < 0.0 || r > 1.0) {
             throw std::runtime_error("Iterations fractions (r) value out of expected range [0,1]");
         }

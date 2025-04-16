@@ -22,6 +22,42 @@ struct GraphMetrics {
     double I;          // Average number of inserts (Fattest Path)
     double D;          // Average number of deletemaxes (Fattest Path)
     double U;          // Average number of updates (Fattest Path)
+
+    // Function to incrementally accumulate metrics
+    void increment(const GraphMetrics& other) {
+        n += other.n;
+        m += other.m;
+        r += other.r;
+        time_ms += other.time_ms;
+        nor_time += other.nor_time;
+        avg_l += other.avg_l;
+        avg_s += other.avg_s;
+        avg_t += other.avg_t;
+        C += other.C;
+        avg_crit += other.avg_crit;
+        I += other.I;
+        D += other.D;
+        U += other.U;
+    }
+
+    // Function to average the metrics by dividing by the number of runs
+    void average(int num_runs) {
+        if (num_runs > 0) {
+            n /= num_runs;
+            m /= num_runs;
+            r /= num_runs;
+            time_ms /= num_runs;
+            nor_time /= num_runs;
+            avg_l /= num_runs;
+            avg_s /= num_runs;
+            avg_t /= num_runs;
+            C /= num_runs;
+            avg_crit /= num_runs;
+            I /= num_runs;
+            D /= num_runs;
+            U /= num_runs;
+        }
+    }
 };
 
 // Structure to hold the critical arc statistics of the graph
