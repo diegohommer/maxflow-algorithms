@@ -69,10 +69,7 @@ struct CriticalArcStats {
 namespace Metrics {
 
     // Function to compute the theoretical maximum number of iterations for the given algorithm.
-    long long compute_max_iterations(Graph& graph, int source, Algorithm algo);
-
-    // Function to compute the source capacity bound (the total capacity of edges originating from the source)
-    int compute_source_capacity_bound(Graph& graph, int source);
+    long long compute_max_iterations(Graph& graph, int source, Algorithm algo, int upper_limit);
 
     // Function to compute the average value of elements in the range [0,1]
     // This is typically used for computing averages like average fraction of visited vertices/arcs

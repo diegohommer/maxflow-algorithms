@@ -72,5 +72,5 @@ def get_column_names_for_graph_type(graph_type):
         raise ValueError(f"Unsupported graph type: {graph_type}")
 
 # Example usage:
-# generate_latex_table("../../data/graphs/matching", "matching")
+generate_latex_table("./data/graphs/matching", "matching")
 # generate_latex_table("../../data/graphs/random_mesh", "mesh")
