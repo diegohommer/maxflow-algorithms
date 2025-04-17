@@ -31,7 +31,7 @@ FordResult ford_fulkerson(Graph& graph, int source, int sink, Algorithm algo, bo
                 }
             }
         }
-        if(should_get_stats)
+        if(should_get_stats and exists_path)
             store_iteration_stats(stats, bfs_result.stats, graph.get_total_vertices(), graph.get_total_arcs());
 
     } while (exists_path);
@@ -66,7 +66,7 @@ void store_iteration_stats(IterationStats& stats, const PathStats& path_stats, i
 
     if (path_stats.inserts != 0)
         stats.inserts_per_iter.emplace_back(static_cast<double>(path_stats.inserts) / n);
-
+    
     if (path_stats.deletemaxes != 0)
         stats.deletemaxes_per_iter.emplace_back(static_cast<double>(path_stats.deletemaxes) / n);
 

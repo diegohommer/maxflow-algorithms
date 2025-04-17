@@ -131,7 +131,8 @@ FlowPath modified_dijkstra_path(Graph& graph, int source, int sink){
     while (priority_queue.get_size() > 0) {
         HeapNode current = priority_queue.deletemax();
         int v = current.vertex;
-        stats.visited_verts++; stats.deletemaxes++;
+        stats.visited_verts++; 
+        stats.deletemaxes++;
 
         parent_edges[v] = current.incoming_edge;
         if (v == sink) break;
@@ -154,7 +155,7 @@ FlowPath modified_dijkstra_path(Graph& graph, int source, int sink){
                 }
             }
         }
-    } 
+    }
 
     // Return empty stack and 0 if didn't find a path
     if (!parent_edges[sink]) {
