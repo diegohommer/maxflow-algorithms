@@ -1,4 +1,5 @@
 import re
+import pandas as pd
 
 ## GENERAL FUNCTIONS
 def extract_graph_info_from_file(filepath, graph_type="matching"):
@@ -52,56 +53,81 @@ def extract_mesh_info(lines):
 ## OUTPUT EXTRACTION FUNCTIONS
 def extract_edmonds_karp_info(lines):
     """
-    Extract output info for edmonds-karp result:\n
+    Extract output info for edmonds-karp result:
         n, m, r, T(µs), normalized_T, avg_l, C, avg_crit, avg_s, avg_t
     """
-    n, m, r, time, normalized_time, avg_l, C, avg_crit, avg_s, avg_t = [], [], [], [], [], [], [], [], [], []
+    data = {
+        'n': [], 'm': [], 'r': [], 'T': [], 'normalized_T': [], 'avg_l': [],
+        'C': [], 'avg_crit': [], 'avg_s': [], 'avg_t': []
+    }
 
     for line in lines:
         if line.startswith('n') or not line.strip():
             continue
-
         parts = line.strip().split(',')
         if len(parts) >= 10:
-            n.append(int(parts[0]))
-            m.append(int(parts[1]))
-            r.append(float(parts[2]))
-            time.append(float(parts[3]))
-            normalized_time.append(float(parts[4]))
-            avg_l.append(float(parts[5]))
-            C.append(float(parts[6]))
-            avg_crit.append(float(parts[7]))
-            avg_s.append(float(parts[8]))
-            avg_t.append(float(parts[9]))
+            data['n'].append(int(parts[0]))
+            data['m'].append(int(parts[1]))
+            data['r'].append(float(parts[2]))
+            data['T'].append(float(parts[3]))
+            data['normalized_T'].append(float(parts[4]))
+            data['avg_l'].append(float(parts[5]))
+            data['C'].append(float(parts[6]))
+            data['avg_crit'].append(float(parts[7]))
+            data['avg_s'].append(float(parts[8]))
+            data['avg_t'].append(float(parts[9]))
 
-    return n, m, r, time, normalized_time, avg_l, C, avg_crit, avg_s, avg_t
+    return pd.DataFrame(data)
 
 def extract_randomized_dfs_info(lines):
     """
-    Extract output info for randomized DFS result:\n
+    Extract output info for randomized DFS result:
         n, m, r, T(µs), normalized_T, avg_l, avg_s, avg_t
     """
-    n, m, r, time, normalized_time, avg_l, avg_s, avg_t = [], [], [], [], [], [], [], []
+    data = {
+        'n': [], 'm': [], 'r': [], 'T': [], 'normalized_T': [],
+        'avg_l': [], 'avg_s': [], 'avg_t': []
+    }
 
     for line in lines:
         if line.startswith('n') or not line.strip():
             continue
-
         parts = line.strip().split(',')
         if len(parts) >= 8:
-            n.append(int(parts[0]))
-            m.append(int(parts[1]))
-            r.append(float(parts[2]))
-            time.append(float(parts[3]))
-            normalized_time.append(float(parts[4]))
-            avg_l.append(float(parts[5]))
-            avg_s.append(float(parts[6]))
-            avg_t.append(float(parts[7]))
+            data['n'].append(int(parts[0]))
+            data['m'].append(int(parts[1]))
+            data['r'].append(float(parts[2]))
+            data['T'].append(float(parts[3]))
+            data['normalized_T'].append(float(parts[4]))
+            data['avg_l'].append(float(parts[5]))
+            data['avg_s'].append(float(parts[6]))
+            data['avg_t'].append(float(parts[7]))
 
-    return n, m, r, time, normalized_time, avg_l, avg_s, avg_t
+    return pd.DataFrame(data)
 
 def extract_fattest_path_info(lines):
     """
-    Extract output info for fattest path result:\n
-        n, m, r, T(µs), normalized_T, avg_l, avg_s, avg_t
+    Extract output info for fattest path result:
+        n, m, r, T(µs), normalized_T, avg_l, I, D, U
     """
+    data = {
+        'n': [], 'm': [], 'r': [], 'T': [], 'normalized_T': [],
+        'avg_l': [], 'avg_I': [], 'avg_D': [], 'avg_U': []
+    }
+
+    for line in lines:
+        if line.startswith('n') or not line.strip():
+            continue
+        parts = line.strip().split(',')
+        if len(parts) >= 9:
+            data['n'].append(int(parts[0]))
+            data['m'].append(int(parts[1]))
+            data['r'].append(float(parts[2]))
+            data['T'].append(float(parts[3]))
+            data['normalized_T'].append(float(parts[4]))
+            data['avg_l'].append(float(parts[5]))
+            data['avg_I'].append(float(parts[6]))
+            data['avg_D'].append(float(parts[7]))
+            data['avg_U'].append(float(parts[8]))
+
+    return pd.DataFrame(data)

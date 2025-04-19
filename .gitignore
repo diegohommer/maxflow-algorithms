@@ -31,6 +31,7 @@ CMakeFiles/
 
 # IDE specific
 .vscode/
+__pycache__/
 .idea/
 *.swp
 *.swo
