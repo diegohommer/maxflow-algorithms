@@ -22,7 +22,7 @@ GEN_SRCS := $(SDIR)/generator/new_washington.c
 
 # Tournament files
 TOUR_GEN_SRCS := $(SDIR)/tournament/generator/generate_tournament.cpp
-TOUR_SOLVER_SRCS := $(SDIR)/tournament/main.cpp
+TOUR_SOLVER_SRCS := $(SDIR)/tournament/main.cpp $(ALG_SRCS) $(DS_SRCS)
 
 # ========== Object Files ==========
 MAIN_OBJS := $(patsubst $(SDIR)/%.cpp,$(ODIR)/%.o,$(MAIN_SRCS))
