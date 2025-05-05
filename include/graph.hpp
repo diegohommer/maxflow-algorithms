@@ -24,23 +24,18 @@ enum class GraphInputFormat { Dimacs, Tournament };
 class Graph
 {
    public:
+    // Default constructor that does nothing
+    Graph();
+
     // Constructor that reads the graph data from an input stream (e.g., a file or
     // stdin)
-    Graph(std::istream &in, GraphInputFormat input_format);
+    Graph(std::istream &in);
 
     // Constructor to create a graph from another graph
     Graph(Graph *graph);
 
     // Function to read a DIMACS-format graph from an input stream
     void read_dimacs(std::istream &in);
-
-    // Builds a flow graph from tournament input to check if team 1 can still win.
-    // Uses a max-flow reduction with the following vertex layout:
-    // - Vertex 0: Source
-    // - Vertices 1 to P: Pairing vertices (games between teams 2..n)
-    // - Vertices P+1 to P+T: Team vertices (excluding team 1)
-    // - Vertex P+T: Sink
-    void build_tournament_graph(std::istream &in);
 
     // Retrieves the forward edge from a given vertex and edge index in the
     // adjacency list
@@ -68,7 +63,7 @@ class Graph
     // Retrieves the total number of arcs (edges) in the graph
     int get_total_arcs() const;
 
-   private:
+   protected:
     // Adjacency list to store the graph's edges: adjacency_list[vertex] contains
     // edges from that vertex
     std::vector<std::vector<Edge>> adjacency_list;
@@ -89,6 +84,31 @@ class Graph
     // Helper function to add a directed edge between two vertices with a
     // specified capacity
     void add_edge(int origin, int destiny, int capacity);
+};
+
+class TournamentGraph : public Graph
+{
+   public:
+    // Constructor that reads tournament instance to build graph from stdin
+    TournamentGraph(std::istream &in);
+
+    // Builds a flow graph from tournament input to check if team 1 can still win.
+    // Uses a max-flow reduction with the following vertex layout:
+    // - Vertex 0: Source
+    // - Vertices 1 to P: Pairing vertices (games between teams 2..n)
+    // - Vertices P+1 to P+T: Team vertices (excluding team 1)
+    // - Vertex P+T: Sink
+    void build_tournament_graph(std::istream &in);
+
+    // Retrieves if team one can win the tournament before computing maxflow
+    bool team_one_can_win_before_flow() const;
+
+    // Retrieves if team one can win the tournament after computing maxflow
+    bool team_one_can_win_after_flow();
+
+   private:
+    // Tournament specific field for checking if the team 1 can't win
+    bool team_one_can_win;
 };
 
 #endif  // GRAPH_H
