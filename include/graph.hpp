@@ -108,7 +108,7 @@ class TournamentGraph : public Graph
 
    private:
     // Tournament specific field for checking if the team 1 can't win
-    bool team_one_can_win;
+    bool team_one_cant_win;
 };
 
 #endif  // GRAPH_H

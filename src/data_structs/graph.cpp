@@ -184,6 +184,7 @@ void TournamentGraph::build_tournament_graph(std::istream& in)
     }
 
     // (5) Process games between teams [2..total_teams] to build the reduction graph
+    team_one_cant_win = false;
     int team_vertex_index = pairings_between_other_teams - 1;
     int pairing_vertex_index = 0;
 
@@ -195,7 +196,7 @@ void TournamentGraph::build_tournament_graph(std::istream& in)
         ++team_vertex_index;
         int max_allowed_wins_i = wins[0] - wins[i] - 1;
         if (max_allowed_wins_i < 0) {
-            team_one_can_win = false;
+            team_one_cant_win = true;
             return;
         }
 
@@ -206,7 +207,6 @@ void TournamentGraph::build_tournament_graph(std::istream& in)
             int opponent_vertex = team_vertex_index + j - i;
             int remaining_games;
             linestr >> remaining_games;
-            std::cout << remaining_games << " ";
 
             // Connect pairing vertex to source and participating teams
             ++pairing_vertex_index;
@@ -214,11 +214,10 @@ void TournamentGraph::build_tournament_graph(std::istream& in)
             this->add_edge(pairing_vertex_index, team_vertex_index, INF);
             this->add_edge(pairing_vertex_index, opponent_vertex, INF);
         }
-        std::cout << std::endl;
     }
 }
 
-bool TournamentGraph::team_one_can_win_before_flow() const { return team_one_can_win; }
+bool TournamentGraph::team_one_can_win_before_flow() const { return !team_one_cant_win; }
 
 bool TournamentGraph::team_one_can_win_after_flow()
 {

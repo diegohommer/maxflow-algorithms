@@ -25,32 +25,29 @@ int display_usage_tutorial(const char* program_name)
     return -1;
 }
 
-bool team_one_can_win(Graph& graph)
-{
-    // Sum capacities of edges *leaving* the source
-    for (const Edge& e : graph.get_outgoing_edges(graph.get_source())) {
-        if (e.capacity > 0) {
-            return false;
-        }
-    }
-    return true;
-}
-
 int single_run_mode(Algorithm algo)
 {
-    Graph graph(std::cin, GraphInputFormat::Tournament);
+    TournamentGraph graph(std::cin);
+
+    if (!graph.team_one_can_win_before_flow()) {
+        std::cout << "não" << std::endl;
+        return 0;
+    }
+
     FordResult result = ford_fulkerson(graph, graph.get_source(), graph.get_sink(), algo, false);
-    if (team_one_can_win(graph)) {
+
+    if (graph.team_one_can_win_after_flow()) {
         std::cout << "sim" << std::endl;
     } else {
         std::cout << "não" << std::endl;
     }
+
     return 0;
 }
 
 int benchmark_mode(Algorithm algo, const char* folder_path, const char* output_name)
 {
-    std::vector<Graph> graphs;
+    std::vector<TournamentGraph> graphs;
 
     for (const auto& entry : std::filesystem::directory_iterator(folder_path)) {
         if (entry.is_regular_file() && entry.path().extension() == ".tourn") {
@@ -58,12 +55,12 @@ int benchmark_mode(Algorithm algo, const char* folder_path, const char* output_n
             if (!input.is_open())
                 continue;
 
-            Graph graph(std::cin, GraphInputFormat::Tournament);
+            TournamentGraph graph(std::cin);
             graphs.push_back(std::move(graph));
         }
     }
 
-    std::sort(graphs.begin(), graphs.end(), [](const Graph& a, const Graph& b) {
+    std::sort(graphs.begin(), graphs.end(), [](const TournamentGraph& a, const TournamentGraph& b) {
         if (a.get_total_vertices() == b.get_total_vertices())
             return a.get_total_arcs() < b.get_total_arcs();
         return a.get_total_vertices() < b.get_total_vertices();

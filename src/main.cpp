@@ -34,7 +34,7 @@ int display_usage_tutorial(char const* program_name)
 
 int single_run_mode(Algorithm algo)
 {
-    Graph graph(std::cin, GraphInputFormat::Dimacs);
+    Graph graph(std::cin);
     FordResult result = ford_fulkerson(graph, graph.get_source(), graph.get_sink(), algo, false);
 
     std::cout << result.max_flow << std::endl;
@@ -53,7 +53,7 @@ int benchmark_mode(Algorithm algo, const char* input_path, const char* output_na
             if (!input.is_open()) {
                 continue;  // Skip the current file if it can't be opened
             }
-            Graph graph(input, GraphInputFormat::Dimacs);
+            Graph graph(input);
             graphs.push_back(std::move(graph));
         }
     }
