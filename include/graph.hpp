@@ -2,6 +2,7 @@
 #define GRAPH_H
 
 #include <iostream>
+#include <limits>
 #include <sstream>
 #include <vector>
 
@@ -33,9 +34,12 @@ class Graph
     // Function to read a DIMACS-format graph from an input stream
     void read_dimacs(std::istream &in);
 
-    // Reads Tournament-format input (as defined in
-    // src/tournament/generator/README.md) and builds the corresponding flow graph
-    // based on the reduction.
+    // Builds a flow graph from tournament input to check if team 1 can still win.
+    // Uses a max-flow reduction with the following vertex layout:
+    // - Vertex 0: Source
+    // - Vertices 1 to P: Pairing vertices (games between teams 2..n)
+    // - Vertices P+1 to P+T: Team vertices (excluding team 1)
+    // - Vertex P+T: Sink
     void build_tournament_graph(std::istream &in);
 
     // Retrieves the forward edge from a given vertex and edge index in the
