@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get the script's directory
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
 # Define paths relative to script location
 GRAPH_DIR="${1:-${SCRIPT_DIR}/../data/graphs}" # default run all graphs inside data
@@ -20,26 +20,26 @@ total_tests=0
 for graph in "${TEST_GRAPHS[@]}"; do
     ((total_tests++))
     echo -n "Testing $graph... "
-    
+
     # Capture all outputs
     results=()
     labels=()
 
-    results+=($($FLOW_SOLVER 0 < "$graph" 2>/dev/null))
+    results+=($($FLOW_SOLVER 0 <"$graph" 2>/dev/null))
     labels+=("solver:edmonds-karp")
 
-    results+=($($FLOW_SOLVER 1 < "$graph" 2>/dev/null))
+    results+=($($FLOW_SOLVER 1 <"$graph" 2>/dev/null))
     labels+=("solver:randomized-dfs")
 
-    results+=($($FLOW_SOLVER 2 < "$graph" 2>/dev/null))
+    results+=($($FLOW_SOLVER 2 <"$graph" 2>/dev/null))
     labels+=("solver:fattest-path")
 
-    results+=($($FLOW_BOOST < "$graph" 2>/dev/null))
+    results+=($($FLOW_BOOST <"$graph" 2>/dev/null))
     labels+=("boost")
 
     # Verify all results match
     all_match=true
-    for (( i=1; i<${#results[@]}; i++ )); do
+    for ((i = 1; i < ${#results[@]}; i++)); do
         if [ "${results[i]}" -ne "${results[0]}" ]; then
             all_match=false
             break
@@ -52,10 +52,10 @@ for graph in "${TEST_GRAPHS[@]}"; do
         printf "${GREEN}PASS${NC} (%d)\n" "${results[0]}"
     else
         printf "${RED}FAIL${NC} ("
-        for ((i=0; i<${#results[@]}; i++)); do
+        for ((i = 0; i < ${#results[@]}; i++)); do
             printf "%s=%s " "${labels[i]}" "${results[i]}"
         done
-        printf "\b)\n"  
+        printf "\b)\n"
     fi
 done
 

@@ -1,9 +1,37 @@
 #include "graph.hpp"
 
-Graph::Graph(std::istream& in) {read_dimacs(in);};
+Graph::Graph(std::istream& in, GraphInputFormat input_format)
+{
+    if (input_format == GraphInputFormat::Dimacs) {
+        read_dimacs(in);
+    } else if (input_format == GraphInputFormat::Tournament) {
+        build_tournament_graph(in);
+    } else {
+        exit(1);
+    }
+};
 
-void Graph::read_dimacs(std::istream& in) {
-    std::string line="", dummy;
+// Copy constructor for the Graph class
+Graph::Graph(Graph* graph)
+{
+    // Copy the basic attributes
+    this->num_vertices_ = graph->num_vertices_;
+    this->num_arcs_ = graph->num_arcs_;
+    this->source = graph->source;
+    this->sink = graph->sink;
+
+    // Create a deep copy of the adjacency list
+    this->adjacency_list.resize(graph->adjacency_list.size());
+    for (size_t i = 0; i < graph->adjacency_list.size(); ++i) {
+        for (const Edge& edge : graph->adjacency_list[i]) {
+            this->adjacency_list[i].emplace_back(edge.to, edge.capacity, edge.reverse_idx);
+        }
+    }
+}
+
+void Graph::read_dimacs(std::istream& in)
+{
+    std::string line = "", dummy;
     std::stringstream linestr;
 
     // (0) find line starting with "p max"
@@ -39,48 +67,52 @@ void Graph::read_dimacs(std::istream& in) {
     }
 
     resize(num_vertices_);
-    unsigned i=0;
+    unsigned i = 0;
     // (3) process and store arcs (all "a " lines)
-    while (getline(in,line) && i < num_arcs_) {
-        if (line.substr(0,2) == "a ") {
+    while (getline(in, line) && i < num_arcs_) {
+        if (line.substr(0, 2) == "a ") {
             std::stringstream arc(line);
-            unsigned u,v,w;
+            unsigned u, v, w;
             char ac;
             arc >> ac >> u >> v >> w;
             // process arc u-v with capacity w
-            add_edge(u-1, v-1, w);
+            add_edge(u - 1, v - 1, w);
             ++i;
         }
     }
 
-    // std::cout << get_source() << " " 
-    //           << get_sink() << " " 
+    // std::cout << get_source() << " "
+    //           << get_sink() << " "
     //           << get_total_vertices() << " "
     //           << get_total_arcs() << std::endl;
-  }
-
-// Copy constructor for the Graph class
-Graph::Graph(Graph* graph) {
-    // Copy the basic attributes
-    this->num_vertices_ = graph->num_vertices_;
-    this->num_arcs_ = graph->num_arcs_;
-    this->source = graph->source;
-    this->sink = graph->sink;
-
-    // Create a deep copy of the adjacency list
-    this->adjacency_list.resize(graph->adjacency_list.size());
-    for (size_t i = 0; i < graph->adjacency_list.size(); ++i) {
-        for (const Edge& edge : graph->adjacency_list[i]) {
-            this->adjacency_list[i].emplace_back(edge.to, edge.capacity, edge.reverse_idx);
-        }
-    }
 }
 
-std::vector<Edge>& Graph::get_outgoing_edges(int vertex) {
-    return adjacency_list[vertex];
+void Graph::build_tournament_graph(std::istream& in)
+{
+    std::string line;
+    std::stringstream linestr;
+    std::vector<int> maxwins;
+    int total_teams = 0;
+
+    // (1) Get total number of teams
+    std::getline(in, line);
+    linestr.str(line);
+    linestr >> total_teams;
+    maxwins.resize(total_teams);
+
+    // (2) Get remaining games to be player for each team
+    //     and compute the maximum number of games each
+    //     team besides team 1 can win.
+    std::getline(in, line);
+    linestr.clear();
+    linestr.str(line);
+    linestr >> maxwins[0];
 }
 
-int Graph::compute_upper_flow_bound() {
+std::vector<Edge>& Graph::get_outgoing_edges(int vertex) { return adjacency_list[vertex]; }
+
+int Graph::compute_upper_flow_bound()
+{
     int src_limit = 0, sink_limit = 0;
 
     // Sum capacities of edges *leaving* the source
@@ -88,39 +120,32 @@ int Graph::compute_upper_flow_bound() {
         src_limit += e.capacity;
     }
 
-    // Sum capacities of edges *entering* the sink (via reverse edges of outgoing edges from sink)
+    // Sum capacities of edges *entering* the sink (via reverse edges of outgoing
+    // edges from sink)
     for (const Edge& e : get_outgoing_edges(sink)) {
         sink_limit += adjacency_list[e.to][e.reverse_idx].capacity;
     }
-    
+
     return std::min(src_limit, sink_limit);
 }
 
-int Graph::get_source() const{
-    return this->source;
-}
+int Graph::get_source() const { return this->source; }
 
-int Graph::get_sink() const{
-    return this->sink;
-}
+int Graph::get_sink() const { return this->sink; }
 
-int Graph::get_total_vertices() const {
-    return this->num_vertices_;
-}
+int Graph::get_total_vertices() const { return this->num_vertices_; }
 
-int Graph::get_total_arcs() const {
-    return this->num_arcs_;
-}
+int Graph::get_total_arcs() const { return this->num_arcs_; }
 
-Edge* Graph::get_forward(int source_vertex, int edge_index){
+Edge* Graph::get_forward(int source_vertex, int edge_index)
+{
     return &adjacency_list[source_vertex][edge_index];
 }
 
-Edge* Graph::get_reverse(Edge edge){
-    return &adjacency_list[edge.to][edge.reverse_idx];
-}
+Edge* Graph::get_reverse(Edge edge) { return &adjacency_list[edge.to][edge.reverse_idx]; }
 
-void Graph::add_edge(int origin, int destiny, int capacity) {
+void Graph::add_edge(int origin, int destiny, int capacity)
+{
     // Check if forward edge already exists
     int forward_idx = -1;
     for (int i = 0; i < adjacency_list[origin].size(); ++i) {
@@ -141,6 +166,4 @@ void Graph::add_edge(int origin, int destiny, int capacity) {
     }
 }
 
-void Graph::resize(int n) {
-    adjacency_list.resize(n);
-}
+void Graph::resize(int n) { adjacency_list.resize(n); }

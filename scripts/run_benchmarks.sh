@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get the script's directory
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
 # Define the solver executable
 FLOW_SOLVER="${SCRIPT_DIR}/../bin/flow_solver"

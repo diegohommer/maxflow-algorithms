@@ -20,18 +20,30 @@ MAIN_SRCS := $(SDIR)/main.cpp $(HELP_SRCS) $(ALG_SRCS) $(DS_SRCS)
 BOOST_SRCS := $(SDIR)/boost_maxflow.cpp
 GEN_SRCS := $(SDIR)/generator/new_washington.c
 
+# Tournament files
+TOUR_GEN_SRCS := $(SDIR)/tournament/generator/generate_tournament.cpp
+TOUR_SOLVER_SRCS := $(SDIR)/tournament/main.cpp
+
 # ========== Object Files ==========
 MAIN_OBJS := $(patsubst $(SDIR)/%.cpp,$(ODIR)/%.o,$(MAIN_SRCS))
 BOOST_OBJS := $(patsubst $(SDIR)/%.cpp,$(ODIR)/%.o,$(BOOST_SRCS))
 GEN_OBJS := $(patsubst $(SDIR)/%.c,$(ODIR)/%.o,$(GEN_SRCS))
+
+# Tournament Object Files
+TOUR_GEN_OBJS := $(patsubst $(SDIR)/%.cpp,$(ODIR)/%.o,$(TOUR_GEN_SRCS))
+TOUR_SOLVER_OBJS := $(patsubst $(SDIR)/%.cpp,$(ODIR)/%.o,$(TOUR_SOLVER_SRCS))
 
 # ========== Executables ==========
 EXEC_MAIN := $(BDIR)/flow_solver
 EXEC_BOOST := $(BDIR)/flow_boost
 EXEC_GEN := $(BDIR)/graph_generator
 
+# Tournament Executables
+EXEC_TOUR_GEN := $(BDIR)/tournament_generator
+EXEC_TOUR_SOLVER := $(BDIR)/tournament_solver
+
 # ========== Build Rules ==========
-all: $(EXEC_MAIN) $(EXEC_BOOST) $(EXEC_GEN)
+all: $(EXEC_MAIN) $(EXEC_BOOST) $(EXEC_GEN) $(EXEC_TOUR_GEN) $(EXEC_TOUR_SOLVER)
 
 $(EXEC_MAIN): $(MAIN_OBJS)
 	@mkdir -p $(@D)
@@ -45,6 +57,15 @@ $(EXEC_GEN): $(GEN_OBJS)
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $^ -o $@
 
+$(EXEC_TOUR_GEN): $(TOUR_GEN_OBJS)
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+$(EXEC_TOUR_SOLVER): $(TOUR_SOLVER_OBJS)
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@
+
+# Object Compilation Rules
 $(ODIR)/%.o: $(SDIR)/%.cpp
 	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -57,3 +78,7 @@ clean:
 	rm -rf $(ODIR) $(BDIR)
 
 .PHONY: all clean
+
+main: $(EXEC_MAIN) $(EXEC_BOOST) $(EXEC_GEN)
+
+tournament: $(EXEC_TOUR_SOLVER) $(EXEC_TOUR_GEN)

@@ -1,7 +1,8 @@
 import os
 import matplotlib.pyplot as plt
 import pandas as pd
-import info_extractor as ie 
+import info_extractor as ie
+
 
 def plot_criticality(directory, save_path=None, use_total_critical=False):
     """
@@ -69,7 +70,8 @@ def plot_criticality(directory, save_path=None, use_total_critical=False):
 
     plt.title(f"{'Critical Arc Fraction' if use_total_critical else 'Average Critical Arc Ratio'} vs Number of Nodes (Edmonds-Karp)")
     plt.xlabel('Number of Nodes (n)')
-    plt.ylabel('Critical Arc Fraction (#crit_arcs / m)' if use_total_critical else 'Average Critical Arc Ratio (log scale)')
+    plt.ylabel(
+        'Critical Arc Fraction (#crit_arcs / m)' if use_total_critical else 'Average Critical Arc Ratio (log scale)')
     plt.legend(title='Graph Family')
     plt.grid(True, which='both', linestyle=':', linewidth=0.5)
     plt.tight_layout()
@@ -78,6 +80,7 @@ def plot_criticality(directory, save_path=None, use_total_critical=False):
         plt.savefig(save_path)
     else:
         plt.show()
+
 
 def plot_avg_s_and_avg_t(directory, chosen_algorithm, save_path=None):
     """
@@ -91,10 +94,11 @@ def plot_avg_s_and_avg_t(directory, chosen_algorithm, save_path=None):
     """
     # Ensure the chosen algorithm is valid
     if chosen_algorithm not in ['edmonds_karp', 'dfs']:
-        raise ValueError("Invalid algorithm chosen. Please select either 'edmonds_karp' or 'dfs'.")
+        raise ValueError(
+            "Invalid algorithm chosen. Please select either 'edmonds_karp' or 'dfs'.")
 
     family_data = {'matching': [], 'mesh': [], 'random': []}
-    
+
     # Process the files
     for filename in sorted(os.listdir(directory)):
         if not filename.endswith('.csv'):
@@ -119,12 +123,13 @@ def plot_avg_s_and_avg_t(directory, chosen_algorithm, save_path=None):
             lines = f.readlines()
 
         if chosen_algorithm == 'edmonds_karp':
-            df = ie.extract_edmonds_karp_info(lines) 
+            df = ie.extract_edmonds_karp_info(lines)
         elif chosen_algorithm == 'dfs':
             df = ie.extract_randomized_dfs_info(lines)
 
         if not df.empty and 'avg_s' in df.columns and 'avg_t' in df.columns:
-            family_data.setdefault(family, []).append(df[['n', 'avg_s', 'avg_t']])
+            family_data.setdefault(family, []).append(
+                df[['n', 'avg_s', 'avg_t']])
 
     markers = {
         'matching': 'o',
@@ -148,14 +153,14 @@ def plot_avg_s_and_avg_t(directory, chosen_algorithm, save_path=None):
 
         # Plot avg_s and avg_t for the current dataset (family)
         ax.plot(grouped_s['n'], grouped_s['avg_s'],
-                label='avg_s', 
+                label='avg_s',
                 marker=markers.get(family, 'o'),
                 linestyle=linestyles.get(family, '-'),
                 markersize=5,
                 linewidth=2)
 
         ax.plot(grouped_t['n'], grouped_t['avg_t'],
-                label='avg_t', 
+                label='avg_t',
                 marker=markers.get(family, 's'),
                 linestyle=linestyles.get(family, '--'),
                 markersize=5,
@@ -178,6 +183,7 @@ def plot_avg_s_and_avg_t(directory, chosen_algorithm, save_path=None):
 
     # Close the figure after saving or showing to avoid overwriting
     plt.close(fig)
+
 
 def plot_fattest_path_operations(directory, save_path=None):
     """
@@ -259,6 +265,7 @@ def plot_fattest_path_operations(directory, save_path=None):
 
     plt.close(fig)
 
+
 def plot_normalized_execution_time(directory, save_path=None):
     """
     Plot normalized execution time for each algorithm across different datasets 
@@ -269,8 +276,8 @@ def plot_normalized_execution_time(directory, save_path=None):
         save_path (str, optional): Path to save the plot.
     """
     family_data = {'matching': {'fattest': [], 'edmonds_karp': [], 'dfs': []},
-                  'mesh': {'fattest': [], 'edmonds_karp': [], 'dfs': []},
-                  'random': {'fattest': [], 'edmonds_karp': [], 'dfs': []}}
+                   'mesh': {'fattest': [], 'edmonds_karp': [], 'dfs': []},
+                   'random': {'fattest': [], 'edmonds_karp': [], 'dfs': []}}
 
     # Process each file in the directory
     for filename in sorted(os.listdir(directory)):
@@ -317,8 +324,10 @@ def plot_normalized_execution_time(directory, save_path=None):
     fig, axes = plt.subplots(1, 3, figsize=(18, 6), sharey=True)
 
     # Colors and labels for each algorithm
-    colors = {'fattest': '#1f77b4', 'edmonds_karp': '#ff7f0e', 'dfs': '#2ca02c'}
-    labels = {'fattest': 'Fattest Path', 'edmonds_karp': 'Edmonds-Karp', 'dfs': 'Randomized DFS'}
+    colors = {'fattest': '#1f77b4',
+              'edmonds_karp': '#ff7f0e', 'dfs': '#2ca02c'}
+    labels = {'fattest': 'Fattest Path',
+              'edmonds_karp': 'Edmonds-Karp', 'dfs': 'Randomized DFS'}
 
     # Plot each dataset's data
     for ax, (family, algo_data) in zip(axes, family_data.items()):
@@ -330,7 +339,8 @@ def plot_normalized_execution_time(directory, save_path=None):
                 continue
 
             combined_df = pd.concat(df_list)
-            grouped = combined_df.groupby('n')['normalized_T'].mean().reset_index()
+            grouped = combined_df.groupby(
+                'n')['normalized_T'].mean().reset_index()
 
             ax.plot(grouped['n'], grouped['normalized_T'],
                     label=labels[algo],
@@ -346,7 +356,8 @@ def plot_normalized_execution_time(directory, save_path=None):
         ax.legend(title='Algorithm')
 
         # Optionally, set a y-limit to make differences more visible
-        ax.set_ylim(1e-9, 1e2)  # Adjust this range based on the values you expect to see
+        # Adjust this range based on the values you expect to see
+        ax.set_ylim(1e-9, 1e2)
 
     plt.tight_layout()
 
@@ -357,9 +368,13 @@ def plot_normalized_execution_time(directory, save_path=None):
 
     plt.close(fig)
 
+
 plot_criticality("./data/outputs", "./data/plots/crit_arc_fraction_plot", True)
-plot_criticality("./data/outputs", "./data/plots/avg_crit_per_crit_arc_plot", False)
+plot_criticality("./data/outputs",
+                 "./data/plots/avg_crit_per_crit_arc_plot", False)
 plot_avg_s_and_avg_t("./data/outputs", "dfs", "./data/plots/dfs_visited_plot")
-plot_avg_s_and_avg_t("./data/outputs", "edmonds_karp", "./data/plots/bfs_visited_plot")
+plot_avg_s_and_avg_t("./data/outputs", "edmonds_karp",
+                     "./data/plots/bfs_visited_plot")
 plot_fattest_path_operations("./data/outputs", "./data/plots/fattest_ops_plot")
-plot_normalized_execution_time("./data/outputs", "./data/plots/normalized_time_plot")
+plot_normalized_execution_time(
+    "./data/outputs", "./data/plots/normalized_time_plot")

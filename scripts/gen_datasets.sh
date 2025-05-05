@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get the script's directory
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 GEN="${SCRIPT_DIR}/../bin/graph_generator"
 
 # Dataset argument (defaults to all)
@@ -31,7 +31,7 @@ generate_mesh() {
     )
 
     for entry in "${rc_values[@]}"; do
-        read -r r c <<< "$entry"
+        read -r r c <<<"$entry"
         out="${TARGET}/test_${count}.graph"
         echo "  -> $out (r=$r, c=$c, C=$C)"
         $GEN $graph_type $r $c $C "$out"
@@ -60,7 +60,7 @@ generate_matching() {
     )
 
     for entry in "${nd_values[@]}"; do
-        read -r n d <<< "$entry"
+        read -r n d <<<"$entry"
         out="${TARGET}/test_${count}.graph"
         echo "  -> $out (n=$n, d=$d, C=$C)"
         $GEN $graph_type $n $d $C "$out"
@@ -89,7 +89,7 @@ generate_random_mesh() {
     )
 
     for entry in "${rc_values[@]}"; do
-        read -r r c <<< "$entry"
+        read -r r c <<<"$entry"
         out="${TARGET}/test_${count}.graph"
         echo "  -> $out (r=$r, c=$c, C=$C)"
         $GEN $graph_type $r $c $C "$out"
@@ -98,24 +98,24 @@ generate_random_mesh() {
 }
 
 case "$DATASET" in
-    all)
-        generate_mesh
-        generate_matching
-        generate_random_mesh
-        ;;
-    mesh)
-        generate_mesh
-        ;;
-    matching)
-        generate_matching
-        ;;
-    random_mesh)
-        generate_random_mesh
-        ;;
-    *)
-        echo "Unknown dataset: $DATASET"
-        exit 1
-        ;;
+all)
+    generate_mesh
+    generate_matching
+    generate_random_mesh
+    ;;
+mesh)
+    generate_mesh
+    ;;
+matching)
+    generate_matching
+    ;;
+random_mesh)
+    generate_random_mesh
+    ;;
+*)
+    echo "Unknown dataset: $DATASET"
+    exit 1
+    ;;
 esac
 
 echo "✅ Done!"
