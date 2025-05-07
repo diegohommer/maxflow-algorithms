@@ -387,6 +387,8 @@ def plot_time_vs_teams_from_file(filename, save_path=None):
     # Plot
     plt.figure(figsize=(8, 5))
     plt.plot(df['teams'], df['time(µs)'], marker='o')
+    plt.xscale("log", base=2)
+    plt.yscale("log")
     plt.xlabel("Number of Teams")
     plt.ylabel("Average Time per Subdir (µs)")
     plt.title("Execution Time vs. Number of Teams")
