@@ -197,7 +197,6 @@ void TournamentGraph::build_tournament_graph(std::istream& in)
         int max_allowed_wins_i = wins[0] - wins[i] - 1;
         if (max_allowed_wins_i < 0) {
             team_one_cant_win = true;
-            return;
         }
 
         // Adding edge from team i to sink (num_vertices - 1)
