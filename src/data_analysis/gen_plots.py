@@ -369,12 +369,43 @@ def plot_normalized_execution_time(directory, save_path=None):
     plt.close(fig)
 
 
-plot_criticality("./data/outputs", "./data/plots/crit_arc_fraction_plot", True)
-plot_criticality("./data/outputs",
-                 "./data/plots/avg_crit_per_crit_arc_plot", False)
-plot_avg_s_and_avg_t("./data/outputs", "dfs", "./data/plots/dfs_visited_plot")
-plot_avg_s_and_avg_t("./data/outputs", "edmonds_karp",
-                     "./data/plots/bfs_visited_plot")
-plot_fattest_path_operations("./data/outputs", "./data/plots/fattest_ops_plot")
-plot_normalized_execution_time(
-    "./data/outputs", "./data/plots/normalized_time_plot")
+def plot_time_vs_teams_from_file(filename, save_path=None):
+    # Read the CSV
+    df = pd.read_csv(filename)
+
+    # Extract number of teams from 'subdir' (e.g., TEAMS_32_RGP_...)
+    df['teams'] = df['subdir'].str.extract(
+        r'TEAMS_(\d+)', expand=False).astype(int)
+
+    # Strip column names and fix whitespace if necessary
+    df.columns = df.columns.str.strip()
+    df['time(µs)'] = df['time(µs)'].astype(float)
+
+    # Sort by number of teams
+    df = df.sort_values(by='teams')
+
+    # Plot
+    plt.figure(figsize=(8, 5))
+    plt.plot(df['teams'], df['time(µs)'], marker='o')
+    plt.xlabel("Number of Teams")
+    plt.ylabel("Average Time per Subdir (µs)")
+    plt.title("Execution Time vs. Number of Teams")
+    plt.grid(True, which="both", linestyle="--", linewidth=0.5)
+    plt.tight_layout()
+
+    if save_path:
+        plt.savefig(f"{save_path}")
+    else:
+        plt.show()
+
+
+# plot_criticality("./data/outputs", "./data/plots/crit_arc_fraction_plot", True)
+# plot_criticality("./data/outputs",
+#                  "./data/plots/avg_crit_per_crit_arc_plot", False)
+# plot_avg_s_and_avg_t("./data/outputs", "dfs", "./data/plots/dfs_visited_plot")
+# plot_avg_s_and_avg_t("./data/outputs", "edmonds_karp",
+#                      "./data/plots/bfs_visited_plot")
+# plot_fattest_path_operations("./data/outputs", "./data/plots/fattest_ops_plot")
+# plot_normalized_execution_time(
+#     "./data/outputs", "./data/plots/normalized_time_plot")
+plot_time_vs_teams_from_file("./data/outputs/fixed_pairs.csv")
