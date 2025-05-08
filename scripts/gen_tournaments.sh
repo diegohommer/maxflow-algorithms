@@ -6,7 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 GEN="${SCRIPT_DIR}/../bin/tournament_generator"
 
 # Output directory
-TARGET_BASE="${SCRIPT_DIR}/../data/graphs"
+TARGET_BASE="${SCRIPT_DIR}/../data/tournaments"
 
 MODE="$1" # either "sweep" or "fixed"
 
