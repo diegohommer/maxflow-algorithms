@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project implements and benchmarks three variations of the Ford-Fulkerson algorithm using various test cases and optimizations. The variations are Edmonds-Karp, Fattest Path and Randomized DFS. It supports different testing scenarios, including correctness tests and logging performance results for different graph types.
+This project implements and benchmarks three variations of the Ford-Fulkerson algorithm: Edmonds-Karp (BFS-based), Fattest Path (maximum-capacity augmenting path), and Randomized DFS. It supports a variety of testing scenarios, including correctness validation and performance evaluation across multiple graph types. The project also includes a reduction from the Winning a Tournament problem to a max-flow instance, allowing evaluation of whether a given team can still win based on current tournament results.
 
 ## Directory Structure
 
@@ -80,14 +80,26 @@ src/
 - **Tournament Input Reduction**
   - The project supports tournament-based instances where the goal is to determine whether team 1 can still win.
   - These inputs are converted into flow graphs using a custom reduction described in  
-    [`src/tournament/generator/README.md`](src/tournament/generator/README.md).
+    [`src/tournament/generator/README.md`](src/tournament/README.md).
 
 ## Build Instructions
 
-To compile the project, run:
+To compile the full project, run:
 
 ```sh
 make
+```
+
+To compile only the MaxFlow implementation, run:
+
+```sh
+make main
+```
+
+To compile only the tournament implementation, run:
+
+```sh
+make tournament
 ```
 
 To clean all compiled files:
@@ -103,9 +115,10 @@ make clean
 - Python 3 (optional, for data plotting only) with:
   - `@pandas`
   - `@matplotlib`
+  - `@seaborn`
 
 ## Authors
 
-Diego Hommerding Amorim [GitHub](https://github.com/diegohommer) • [Email](mailto:daugsteel@gmail.com)
+Diego Hommerding Amorim [GitHub](https://github.com/diegohommer) • [Email](mailto:dieghommeramorim@gmail.com)
 
 Developed as part of an academic project for the **Advanced Algorithms** course at **UFRGS**.

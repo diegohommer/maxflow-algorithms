@@ -2,7 +2,7 @@
 
 ## Parameters
 
-This instance generator can be customized using command-line arguments:
+The instance generator can be customized using command-line arguments:
 
 ```
 ./program [n] [c] [α] [β]
