@@ -5,8 +5,7 @@ import matplotlib.pyplot as plt
 # Load the CSV file
 # Change to your actual file path
 
-input_file = input()
-df = pd.read_csv(input_file)
+df = pd.read_csv("./data/outputs/varied_pairs.csv")
 
 # Extract RGP and BIAS values from the 'subdir' column
 df[['RGP', 'BIAS']] = df['subdir'].str.extract(
@@ -29,4 +28,4 @@ plt.title("Team 1 Win Percentage Heatmap")
 plt.xlabel("β (Bias towards team 1)")
 plt.ylabel("α (Proportion of played games)")
 plt.tight_layout()
-plt.show()
+plt.savefig("./data/plots/heatmap.png", dpi=300)

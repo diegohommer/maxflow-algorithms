@@ -410,4 +410,5 @@ def plot_time_vs_teams_from_file(filename, save_path=None):
 # plot_fattest_path_operations("./data/outputs", "./data/plots/fattest_ops_plot")
 # plot_normalized_execution_time(
 #     "./data/outputs", "./data/plots/normalized_time_plot")
-plot_time_vs_teams_from_file("./data/outputs/fixed_pairs.csv")
+plot_time_vs_teams_from_file(
+    "./data/outputs/fixed_pairs.csv", "./data/plots/tournament_time.png")

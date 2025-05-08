@@ -16,7 +16,7 @@ int display_usage_tutorial(const char* program_name)
     std::cerr << "Arguments:\n";
     std::cerr << "  <tourn_folder_path>      Required for Benchmark Mode. Folder with tournament "
                  "files (.tourn).\n";
-    std::cerr << "  <output_file_name>            Required for Benchmark Mode. File name to save "
+    std::cerr << "  <output_file_name>       Required for Benchmark Mode. File name to save "
                  "CSV results.\n\n";
 
     return -1;
