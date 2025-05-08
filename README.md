@@ -12,6 +12,7 @@ data/
   ├── outputs/        # Output .csv files from benchmark runs
   ├── plots/          # Generated plots (.png) from python scripts
 include/
+reports/              # Reports analyzing and benchmarking the implementations
 scripts/              # Bash scripts for generating graphs and running tests
 src/
   ├── algorithms/     # Ford-Fulkerson algorithm variants
