@@ -1,13 +1,14 @@
 #include "ford_fulk.hpp"
 
-FordResult ford_fulkerson(Graph& graph, int source, int sink, Algorithm algo, bool should_get_stats){
+FordResult ford_fulkerson(Graph& graph, int source, int sink, Algorithm algo, bool should_get_stats)
+{
     int max_flow = 0;
     int iterations = 0;
     bool exists_path = false;
     IterationStats stats;
 
     SearchFunction find_path = get_search_function(algo);
-    int flow_upper_bound = graph.compute_upper_flow_bound(); 
+    int flow_upper_bound = graph.compute_upper_flow_bound();
 
     auto start = std::chrono::high_resolution_clock::now();
     do {
@@ -26,22 +27,24 @@ FordResult ford_fulkerson(Graph& graph, int source, int sink, Algorithm algo, bo
                 path_edge->capacity -= flow;
                 graph.get_reverse(*path_edge)->capacity += flow;
 
-                if(path_edge->capacity == 0){
+                if (path_edge->capacity == 0) {
                     path_edge->num_criticals++;
                 }
             }
         }
-        if(should_get_stats and exists_path)
-            store_iteration_stats(stats, bfs_result.stats, graph.get_total_vertices(), graph.get_total_arcs());
+        if (should_get_stats and exists_path)
+            store_iteration_stats(stats, bfs_result.stats, graph.get_total_vertices(),
+                                  graph.get_total_arcs());
 
     } while (exists_path);
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
-    return FordResult{ max_flow, flow_upper_bound, iterations, duration, stats };
+    return FordResult{max_flow, flow_upper_bound, iterations, duration, stats};
 }
 
-SearchFunction get_search_function(Algorithm algo) {
+SearchFunction get_search_function(Algorithm algo)
+{
     switch (algo) {
         case Algorithm::EdmondsKarp:
             return bfs_path;
@@ -54,11 +57,12 @@ SearchFunction get_search_function(Algorithm algo) {
     }
 }
 
-void store_iteration_stats(IterationStats& stats, const PathStats& path_stats, int n, int m){
-    if(path_stats.visited_verts != 0)
+void store_iteration_stats(IterationStats& stats, const PathStats& path_stats, int n, int m)
+{
+    if (path_stats.visited_verts != 0)
         stats.s_per_iter.emplace_back(static_cast<double>(path_stats.visited_verts) / n);
 
-    if(path_stats.visited_arcs != 0)
+    if (path_stats.visited_arcs != 0)
         stats.t_per_iter.emplace_back(static_cast<double>(path_stats.visited_arcs) / m);
 
     if (path_stats.path_length != 0)
@@ -66,7 +70,7 @@ void store_iteration_stats(IterationStats& stats, const PathStats& path_stats, i
 
     if (path_stats.inserts != 0)
         stats.inserts_per_iter.emplace_back(static_cast<double>(path_stats.inserts) / n);
-    
+
     if (path_stats.deletemaxes != 0)
         stats.deletemaxes_per_iter.emplace_back(static_cast<double>(path_stats.deletemaxes) / n);
 

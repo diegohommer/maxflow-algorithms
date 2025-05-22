@@ -4,6 +4,7 @@ import info_extractor as ie
 from statistics import mean
 from collections import defaultdict
 
+
 def generate_graph_table(directory, graph_type="matching"):
     """Generate LaTeX table from graph data in the specified directory."""
     data = []
@@ -11,7 +12,7 @@ def generate_graph_table(directory, graph_type="matching"):
         if filename.endswith('.graph'):
             filepath = os.path.join(directory, filename)
             graph_info = ie.extract_graph_info_from_file(filepath, graph_type)
-            
+
             if None not in graph_info:
                 data.append([filename] + list(graph_info))
 
@@ -19,14 +20,16 @@ def generate_graph_table(directory, graph_type="matching"):
         columns = ["OriginalFile", "n", "m", "n'", "d"]
     elif graph_type == "mesh":
         columns = ["OriginalFile", "r", "c", "n", "m"]
-    
+
     df = pd.DataFrame(data, columns=columns)
     df = df.sort_values(by=["n", "m"]).reset_index(drop=True)
     df["G"] = [f"{i+1}" for i in df.index]
-    df = df[["G"] + columns[1:]] 
+    df = df[["G"] + columns[1:]]
 
-    latex_code = df.to_latex(index=False, caption=f"{graph_type.capitalize()} Graphs Summary", label=f"tab:{graph_type}", escape=False)
+    latex_code = df.to_latex(
+        index=False, caption=f"{graph_type.capitalize()} Graphs Summary", label=f"tab:{graph_type}", escape=False)
     print(latex_code)
+
 
 def generate_r_table(directory):
     """
@@ -89,6 +92,7 @@ def generate_r_table(directory):
 
     print(latex)
 
+
 def generate_execution_time_table(directory):
     """
     Generate LaTeX table with execution times (T) for only the largest 3 graphs in each file
@@ -129,7 +133,8 @@ def generate_execution_time_table(directory):
             # Get the last 3 execution times (largest graphs)
             largest_graph_times = df['T'].tail(3).tolist()
             if largest_graph_times:
-                avg_time = sum(largest_graph_times) / len(largest_graph_times) / 1_000_000
+                avg_time = sum(largest_graph_times) / \
+                    len(largest_graph_times) / 1_000_000
                 results[algo][family].append(avg_time)
 
     families = sorted({fam for fams in results.values() for fam in fams})
@@ -153,6 +158,7 @@ def generate_execution_time_table(directory):
     latex += "\\end{tabular}"
 
     print(latex)
+
 
 # Example usage:
 # generate_graph_table("./data/graphs/matching", "matching")

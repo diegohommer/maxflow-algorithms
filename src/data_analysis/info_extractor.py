@@ -1,7 +1,9 @@
 import re
 import pandas as pd
 
-## GENERAL FUNCTIONS
+# GENERAL FUNCTIONS
+
+
 def extract_graph_info_from_file(filepath, graph_type="matching"):
     """Extract relevant graph information from a .graph file."""
     with open(filepath, 'r') as f:
@@ -13,14 +15,15 @@ def extract_graph_info_from_file(filepath, graph_type="matching"):
         return extract_mesh_info(lines)
     else:
         raise ValueError(f"Unsupported graph type: {graph_type}")
-    
+
+
 def extract_output_info_from_file(filepath, output_algorithm):
     """Extract relevant output information from a .csv output file."""
     with open(filepath, 'r') as f:
         lines = f.readlines()
 
 
-## GRAPH EXTRACTION FUNCTIONS
+# GRAPH EXTRACTION FUNCTIONS
 def extract_matching_info(lines):
     """Extract matching graph info (n, m, n_prime, d)."""
     n = m = n_prime = d = None
@@ -34,6 +37,7 @@ def extract_matching_info(lines):
             if len(parts) >= 4:
                 n, m = int(parts[2]), int(parts[3])
     return n, m, n_prime, d
+
 
 def extract_mesh_info(lines):
     """Extract mesh graph info (rows, cols, n, m)."""
@@ -50,7 +54,7 @@ def extract_mesh_info(lines):
     return rows, cols, n, m
 
 
-## OUTPUT EXTRACTION FUNCTIONS
+# OUTPUT EXTRACTION FUNCTIONS
 def extract_edmonds_karp_info(lines):
     """
     Extract output info for edmonds-karp result:
@@ -79,6 +83,7 @@ def extract_edmonds_karp_info(lines):
 
     return pd.DataFrame(data)
 
+
 def extract_randomized_dfs_info(lines):
     """
     Extract output info for randomized DFS result:
@@ -104,6 +109,7 @@ def extract_randomized_dfs_info(lines):
             data['avg_t'].append(float(parts[7]))
 
     return pd.DataFrame(data)
+
 
 def extract_fattest_path_info(lines):
     """
